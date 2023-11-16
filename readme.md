@@ -22,7 +22,7 @@ Datasheet: https://www.nxp.com/docs/en/data-sheet/SL2S2002_SL2S2102.pdf
 
 ICODE® SLI/SLIX/SLIX2/DNA Memory Access Management: https://www.nxp.com/confidential/AN11138 (Sign in required)
 
-
+ICODE as NDEF AN2023: https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/nfc/7583/1/EEOL_2011FEB16_EMS_RFD_AN_01.pdf
 
 ## How to buy them ?
 
