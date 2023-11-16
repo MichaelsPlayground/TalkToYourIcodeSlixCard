@@ -1,15 +1,22 @@
-# Talk to your Mifare NTAG424 DNA card
+# Talk to your ICODE SLIX S card
 
-This is a sample app to demonstrate how to work with a Mifare NTAG424DNA card. 
+This is a sample app to demonstrate how to work with an ICODE SLIX S tag.
 
-If you are going to buy these tags just have a look at the offer by **shopNfc**
+## data
 
-https://www.shopnfc.com/en/nfc-stickers/487-nfc-stickers-ntag424-dna-d22mm.html
+Datasheet: 
 
-They cost about 1 Euro per piece (minimum quantity of 10 pieces) and it's a free 
+## How to buy them ?
+
+If you are going to buy these tags just have a look at the offer by **shopNfc**: 
+https://www.shopnfc.com/en/nfc-stickers/478-nfc-stickers-icode-slix-50x50mm.html
+
+They cost about 7 Euro per 10 piece (minimum quantity of 10 pieces) and it's a free
 delivery around the world.
 
 Note: I am not affiliated to shopNfc and I don't get any reward for these lines.
+
+# The following description is from an old project !
 
 ## project / app status
 
