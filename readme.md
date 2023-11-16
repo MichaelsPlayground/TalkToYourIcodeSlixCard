@@ -1,10 +1,28 @@
 # Talk to your ICODE SLIX S card
 
-This is a sample app to demonstrate how to work with an ICODE SLIX S tag.
+This is a sample app to demonstrate how to work with an ICODE SLIX (SL2S2002) tag.
 
 ## data
 
-Datasheet: 
+Memory Information: 112 bytes, 28 blocks, with 4 bytes per block
+
+Maximum NDEF storage size after format: 106 bytes
+
+Technologies Supported: ISO/IEC 15693-3 compatible, ISO/IEC 15693-2 compatible
+
+Android Technology Information:
+
+Tech [android.nfc.tech.NfcV, android.nfc.tech.NdefFormatable]
+
+Maximum transceive length: 253 bytes
+
+Supported read commands: Single Block Read, Multiple Block Read, Inventory Read, Fast Inventory Read, Get Multiple Block Security Status, Get System Information
+
+Datasheet: https://www.nxp.com/docs/en/data-sheet/SL2S2002_SL2S2102.pdf
+
+ICODE® SLI/SLIX/SLIX2/DNA Memory Access Management: https://www.nxp.com/confidential/AN11138 (Sign in required)
+
+
 
 ## How to buy them ?
 
