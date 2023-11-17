@@ -107,6 +107,9 @@ public class Utils {
         //return String.format("0x%02X", input);
     }
 
+    public static byte[] hexStringToByteArrayBlanks(String s) {
+        return hexStringToByteArray(s.replaceAll(" ", ""));
+    }
     public static byte[] hexStringToByteArray(String s) {
         try {
             int len = s.length();

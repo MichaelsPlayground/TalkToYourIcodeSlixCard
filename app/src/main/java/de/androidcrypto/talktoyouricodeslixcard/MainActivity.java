@@ -274,6 +274,13 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
     private NfcAdapter mNfcAdapter;
     //private CommunicationAdapter adapter;
+    private IcodeSlixMethods icodeSlixMethods;
+
+
+
+
+
+
     private IsoDep isoDep;
     private byte[] tagIdByte;
 
@@ -420,6 +427,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         changeKeyDes01ToDefault2DesVisualizing = findViewById(R.id.btnDesVisualizeChangeKeyDes01ToDefault2);
 
         // tests
+        /*
         LrpAuthentication lrp = new LrpAuthentication(null); // todo change to onDetected, otherwise failure
         boolean lrpSelftest = lrp.runAllTests(false);
         if (lrpSelftest == false) {
@@ -429,6 +437,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             writeToUiAppend(output, "LRP self test SUCCESS");
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, "LRP self test SUCCESS", COLOR_GREEN);
         }
+
+         */
 
         testNdefTemplate = findViewById(R.id.btnTestNdefTemplate);
 
@@ -3669,10 +3679,34 @@ C1h =
         invalidateAllSelections();
         writeToUiAppend(output, "NFC tag discovered");
 
+        IcodeSlixMethods icodeSlixMethods = new IcodeSlixMethods(tag, activity, output);
+
+        writeToUiAppend(output, outputDivider);
+        byte[] response = icodeSlixMethods.readSingleBlock(0);
+        writeToUiAppend(output, printData("readSingleBlock 00", response));
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.readMultipleBlocks(0, 28);
+        writeToUiAppend(output, printData("readMultipleBlocks 00-27\n", response));
+
+        writeToUiAppend(output, outputDivider);
+        byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
+        boolean success = icodeSlixMethods.writeSingleBlock(0, data);
+        writeToUiAppend(output, "writeBlock 00: " + success);
+
+        writeToUiAppend(output, outputDivider);
+        //byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
+        success = icodeSlixMethods.formatTagNdef();
+        writeToUiAppend(output, "formatTagNde: " + success);
+
+
+/*
         ntag424DnaMethods = new Ntag424DnaMethods(output, tag, activity);
 
         // self test for authenticateLrpEv2First
         ntag424DnaMethods.authenticateLrpEv2FirstTest();
+
+ */
 /*
         isoDep = null;
         try {

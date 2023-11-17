@@ -24,6 +24,10 @@ ICODE® SLI/SLIX/SLIX2/DNA Memory Access Management: https://www.nxp.com/confide
 
 ICODE as NDEF AN2023: https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/nfc/7583/1/EEOL_2011FEB16_EMS_RFD_AN_01.pdf
 
+Designing an NFC Android Application for M24SR and M24LR devices AN4430: https://www.st.com/resource/en/application_note/an4430-designing-an-nfc-android-application-for-m24sr-and-m24lr-devices-stmicroelectronics.pdf
+
+
+
 ## How to buy them ?
 
 If you are going to buy these tags just have a look at the offer by **shopNfc**: 
@@ -33,6 +37,13 @@ They cost about 7 Euro per 10 piece (minimum quantity of 10 pieces) and it's a f
 delivery around the world.
 
 Note: I am not affiliated to shopNfc and I don't get any reward for these lines.
+
+
+## commands
+
+https://developer.apple.com/documentation/corenfc/nfciso15693tag
+
+
 
 # The following description is from an old project !
 

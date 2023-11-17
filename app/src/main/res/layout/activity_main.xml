@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Mifare NTAG 424 DNA Examples"
+                android:text="ICODE SLIX S Examples"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
