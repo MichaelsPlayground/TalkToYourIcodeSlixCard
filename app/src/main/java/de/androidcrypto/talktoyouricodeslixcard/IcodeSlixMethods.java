@@ -159,6 +159,114 @@ public class IcodeSlixMethods {
         return true;
     }
 
+    public boolean setEas() {
+        // sanity checks
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ SET_EAS_COMMAND, //(byte)0xa2, // command set eas
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "eas set successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
+    public boolean resetEas() {
+        // sanity checks
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ RESET_EAS_COMMAND, //(byte)0xa3, // command reset eas
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "eas reset successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
+    public byte[] easAlarm() {
+        // sanity checks
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ EAS_ALARM_COMMAND, //(byte)0xa5, // command eas alarm
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
+    public byte[] inventoryRead(byte afi, byte maskLength, byte maskValue, byte firstBlockNumber, byte numberOfBlocks) {
+        // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
+        // sanity checks
+        byte[] cmd = new byte[]{
+                /* FLAGS   */ (byte) 0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* AFI     */ afi,
+                /* MASK LEN*/ maskLength,
+                /* MASK VAL*/ maskValue,
+                /* 1st BLK */ firstBlockNumber,
+                /* BLK NBR */ numberOfBlocks
+        };
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
 
     public byte[] readSingleBlock(int blockNumber) {
         // sanity check

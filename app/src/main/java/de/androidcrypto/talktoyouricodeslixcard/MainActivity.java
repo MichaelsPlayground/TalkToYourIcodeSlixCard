@@ -3701,11 +3701,34 @@ C1h =
         success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);
 
+        /*
         writeToUiAppend(output, outputDivider);
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         success = icodeSlixMethods.setPasswordEasAfi(defaultPassword);
         writeToUiAppend(output, "setPasswordEasAfi: " + success);
+        */
+/*
+        writeToUiAppend(output, outputDivider);
+        success = icodeSlixMethods.setEas();
+        writeToUiAppend(output, "setEas: " + success);
+*/
 
+        writeToUiAppend(output, outputDivider);
+        success = icodeSlixMethods.resetEas();
+        writeToUiAppend(output, "resetEas: " + success);
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.easAlarm();
+        writeToUiAppend(output, printData("easAlarm\n", response));
+        // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
+
+        writeToUiAppend(output, outputDivider);
+        byte maskLength = (byte) (0x08);
+        byte maskValue = (byte) (0xff);
+        byte firstBlock = (byte) 0x00;
+        byte numberOfBlocks = (byte) 0x00;
+        response = icodeSlixMethods.inventoryRead(afi, maskLength, maskValue, firstBlock, numberOfBlocks);
+        writeToUiAppend(output, printData("inventoryRead\n", response));
 /*
         writeToUiAppend(output, outputDivider);
         byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
