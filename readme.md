@@ -2,7 +2,7 @@
 
 This is a sample app to demonstrate how to work with an ICODE SLIX (SL2S2002) tag.
 
-## data
+## technical data of the tag
 
 Memory Information: 112 bytes, 28 blocks, with 4 bytes per block
 
@@ -26,7 +26,7 @@ ICODE as NDEF AN2023: https://community.nxp.com/pwmxy87654/attachments/pwmxy8765
 
 Designing an NFC Android Application for M24SR and M24LR devices AN4430: https://www.st.com/resource/en/application_note/an4430-designing-an-nfc-android-application-for-m24sr-and-m24lr-devices-stmicroelectronics.pdf
 
-
+ICODE as NFC Type ICODE Tag AN11042: https://dangerousthings.com/wp-content/uploads/I-CODE_SLI-NFC-AN11042.pdf
 
 ## How to buy them ?
 
@@ -42,6 +42,24 @@ Note: I am not affiliated to shopNfc and I don't get any reward for these lines.
 ## commands
 
 https://developer.apple.com/documentation/corenfc/nfciso15693tag
+
+
+## Sample data
+
+```plaintext
+NXP Icode Slix S
+responseInventory length: 10 data: 0000700467db500104e0
+responseGetSystemInfoFrame1bytesAddress length: 15 data: 000f700467db500104e000001b0301
+
+```
+
+```plaintext
+NfcV Skikarte
+responseInventory length: 10 data: 0002c8504121662416e0
+responseGetSystemInfoFrame1bytesAddress length: 15 data: 000fc8504121662416e00200330302
+
+```
+
 
 
 

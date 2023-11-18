@@ -205,6 +205,11 @@ public class Utils {
         return (data[2] & 0xff) << 16 | (data[1] & 0xff) << 8 | (data[0] & 0xff);
     }
 
+    public static int intFrom2ByteArrayInversed(byte[] bytes) {
+        return ((bytes[1] & 0xFF) << 8 ) |
+                ((bytes[0] & 0xFF) << 0 );
+    }
+
     // converts an int to a 2 byte long array inversed = LSB
     public static byte[] intTo2ByteArrayInversed(int value) {
         return new byte[]{

@@ -3690,6 +3690,19 @@ C1h =
         writeToUiAppend(output, printData("readMultipleBlocks 00-27\n", response));
 
         writeToUiAppend(output, outputDivider);
+        byte afi = (byte) 0x00;
+        //byte afi = (byte) 0xAE;
+        boolean success = icodeSlixMethods.writeAfi(afi);
+        writeToUiAppend(output, "writeAfi: " + success);
+
+        writeToUiAppend(output, outputDivider);
+        byte dsfId = (byte) 0x00;
+        //byte dsfId = (byte) 0xD1;
+        success = icodeSlixMethods.writeDsfId(dsfId);
+        writeToUiAppend(output, "writeDsfId: " + success);
+
+/*
+        writeToUiAppend(output, outputDivider);
         byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
         boolean success = icodeSlixMethods.writeSingleBlock(0, data);
         writeToUiAppend(output, "writeBlock 00: " + success);
@@ -3698,7 +3711,7 @@ C1h =
         //byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
         success = icodeSlixMethods.formatTagNdef();
         writeToUiAppend(output, "formatTagNde: " + success);
-
+*/
 
 /*
         ntag424DnaMethods = new Ntag424DnaMethods(output, tag, activity);

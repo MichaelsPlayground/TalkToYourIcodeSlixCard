@@ -31,25 +31,26 @@ public class IcodeSlixMethods {
     private byte responseFlags;
     private byte dsfId;
     private byte[] responseInventory;
+    private SystemInformation systemInformation;
     private byte[] responseGetSystemInfoFrame1bytesAddress;
 
     // mandatory commands as defined in ISO/IEC 15693-3
     // https://developer.apple.com/documentation/corenfc/nfciso15693tag
     private static final byte GET_RANDOM_NUMBER_COMMAND = (byte) 0xB2;
-    private static final byte INVENTORY_COMMAND = (byte) 0x00;
-    private static final byte STAY_QUIET_COMMAND = (byte) 0x00;
+    private static final byte INVENTORY_COMMAND = (byte) 0x01; // todo check
+    private static final byte STAY_QUIET_COMMAND = (byte) 0x02;
     private static final byte READ_SINGLE_BLOCK_COMMAND = (byte) 0x20;
     private static final byte WRITE_SINGLE_BLOCK_COMMAND = (byte) 0x21;
-    private static final byte LOCK_BLOCK_COMMAND = (byte) 0x00;
+    private static final byte LOCK_BLOCK_COMMAND = (byte) 0x22;
     private static final byte READ_MULTIPLE_BLOCKS_COMMAND = (byte) 0x23;
-    private static final byte SELECT_COMMAND = (byte) 0x00;
-    private static final byte RESET_TO_READY_COMMAND = (byte) 0x00;
-    private static final byte WRITE_AFI_CCOMMAND = (byte) 0x00;
-    private static final byte LOCK_AFI_COMMAND = (byte) 0x00;
-    private static final byte WRITE_DSFID_COMMAND = (byte) 0x00;
-    private static final byte LOCK_DSFID_COMMAND = (byte) 0x00;
-    private static final byte GET_SYSTEM_COMMAND = (byte) 0x00;
-    private static final byte GET_MULTIPLE_BLOCK_SECURITY_STATUS_COMMAND = (byte) 0x00;
+    private static final byte SELECT_COMMAND = (byte) 0x25;
+    private static final byte RESET_TO_READY_COMMAND = (byte) 0x26;
+    private static final byte WRITE_AFI_CCOMMAND = (byte) 0x27;
+    private static final byte LOCK_AFI_COMMAND = (byte) 0x28;
+    private static final byte WRITE_DSFID_COMMAND = (byte) 0x29;
+    private static final byte LOCK_DSFID_COMMAND = (byte) 0x2A;
+    private static final byte GET_SYSTEM_INFORMATION_COMMAND = (byte) 0x2B;
+    private static final byte GET_MULTIPLE_BLOCK_SECURITY_STATUS_COMMAND = (byte) 0x2C;
 
     // custom commands
     private static final byte SET_PASSWORD_COMMAND = (byte) 0xB3;
@@ -82,6 +83,10 @@ public class IcodeSlixMethods {
     private static final String RESPONSE_FAILURE_STRING = "FAILURE";
     // constants
     private int MAXIMUM_BLOCK_NUMBER = 27; // fixed for ICODE SLIX S with 28 blocks * 4 bytes = 108 bytes user memory
+    // from system information
+    private int NUMBER_OF_BLOCKS;
+    private int BYTES_PER_BLOCK;
+    private int MEMORY_SIZE;
 
     public IcodeSlixMethods(Tag tag, Activity activity, TextView textView) {
         this.tag = tag;
@@ -193,6 +198,58 @@ public class IcodeSlixMethods {
         return true;
     }
 
+    public boolean writeAfi(byte afi) {
+        // sanity check
+
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ WRITE_AFI_CCOMMAND, //(byte)0x27, // command write afi
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+                /* OFFSET  */ afi
+        };
+        System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "afi written successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
+    public boolean writeDsfId(byte dsfId) {
+        // sanity check
+
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ WRITE_DSFID_COMMAND, //(byte)0x29, // command write dsfId
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+                /* OFFSET  */ dsfId
+        };
+        System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "dsfId written successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
     public boolean formatTagNdef() {
         //byte[] block00 = Utils.hexStringToByteArrayBlanks("E1 40 F2 09"); // F2 defines the total memory of the tag
         // 112 bytes = 70h
@@ -230,6 +287,26 @@ public class IcodeSlixMethods {
             return false;
         }
         return true;
+    }
+
+    private SystemInformation getSystemInformation() {
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x02, // flags
+                /* COMMAND */ GET_SYSTEM_INFORMATION_COMMAND, //(byte)0x20, // command read single block
+        };
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return null;
+        }
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "system information read successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return new SystemInformation(response);
     }
 
     /**
@@ -333,7 +410,6 @@ public class IcodeSlixMethods {
         Log.d(TAG, printData("tagUid", tagUid));
         writeToUiAppend(textView, printData("tagUid", tagUid));
         nfcV = NfcV.get(tag);
-
         if (nfcV == null) {
             errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "NFCV is NULL (maybe it is not an Icode SLIX tag ?), aborted";
@@ -363,19 +439,28 @@ public class IcodeSlixMethods {
             responseInventory = nfcV.transceive(UIDFrame);
             Log.d(TAG, printData("responseInventory", responseInventory));
             writeToUiAppend(textView, printData("responseInventory", responseInventory));
-            byte[] GetSystemInfoFrame1bytesAddress = new byte[] { (byte) 0x02, (byte) 0x2B };
-            responseGetSystemInfoFrame1bytesAddress = nfcV.transceive(GetSystemInfoFrame1bytesAddress);
-            Log.d(TAG, printData("responseGetSystemInfoFrame1bytesAddress", responseGetSystemInfoFrame1bytesAddress));
-            writeToUiAppend(textView, printData("responseGetSystemInfoFrame1bytesAddress", responseGetSystemInfoFrame1bytesAddress));
-
-
+            systemInformation = getSystemInformation();
+            if (systemInformation == null) {
+                writeToUiAppend(textView, "Could not retrieve system information, aborted");
+                errorCode = RESPONSE_FAILURE.clone();
+                errorCodeReason = "Could not retrieve system information, aborted";
+            } else {
+                NUMBER_OF_BLOCKS = systemInformation.getNumberOfBlocks();
+                BYTES_PER_BLOCK = systemInformation.getBytesPerBlock();
+                MEMORY_SIZE = systemInformation.getMemorySizeInt();
+                Log.d(TAG, systemInformation.dump());
+                writeToUiAppend(textView, systemInformation.dump());
+                errorCode = RESPONSE_OK.clone();
+                errorCodeReason = RESPONSE_OK_STRING;
+            }
 
         } catch (IOException e) {
             Log.e(TAG, "Error on connecting the tag: " + e.getMessage());
             writeToUiAppend(textView, "Error on connecting the tag: " + e.getMessage());
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "IOException: " + e.getMessage();
             return false;
         }
-
 
         Utils.vibrateShort(activity.getApplicationContext());
         return true;
