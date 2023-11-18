@@ -64,7 +64,8 @@ public class IcodeSlixMethods {
     private static final byte LOCK_EAS_COMMAND = (byte) 0xA4;
     private static final byte EAS_ALARM_COMMAND = (byte) 0xA5;
     private static final byte PASSWORD_PROTECT_EAS_AFI_COMMAND = (byte) 0xA6;
-
+    private static final byte MANUFACTURER_CODE_NXP = (byte) 0x04;
+    private static final byte PASSWORD_IDENTIFIER_EAS_AFI = (byte) 0x10;
     // Response codes
     private boolean isTagIcodeSlix = false;
     private boolean isApplicationSelected = false;
@@ -102,6 +103,62 @@ public class IcodeSlixMethods {
             errorCodeReason = RESPONSE_FAILURE_STRING;
         }
     }
+
+    public boolean setPasswordEasAfi(byte[] password) {
+        return setPassword(PASSWORD_IDENTIFIER_EAS_AFI, password);
+    }
+
+    private boolean setPassword(byte passwordIdentifier, byte[] password) {
+        // sanity checks
+        if (!checkPassword(password)) {
+            return false;
+        }
+        if (!checkPasswordIdentifier(passwordIdentifier)) {
+            return false;
+        }
+        byte[] randomNumber = getRandomNumber();
+        if (randomNumber == null) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "Could not get the random number, aborted";
+            Log.e(TAG, "Could not get the random number, aborted");
+            return false;
+        }
+        //Log.d(TAG, printData("password", password));
+        byte[] randomNumberFull = new byte[4];
+        System.arraycopy(randomNumber, 0, randomNumberFull, 0, 2);
+        System.arraycopy(randomNumber, 0, randomNumberFull, 2, 2);
+        byte[] passwordXor = xor(password, randomNumberFull);
+        //Log.d(TAG, printData("randomNumber", randomNumber));
+        //Log.d(TAG, printData("randomNumberFull", randomNumberFull));
+        //Log.d(TAG, printData("passwordXor", passwordXor));
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ SET_PASSWORD_COMMAND, //(byte)0xb3, // command set password
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+                /* PASS ID */ passwordIdentifier,
+                /* PASSWORD*/ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        System.arraycopy(passwordXor, 0, cmd, 12, 4); // copy xored password
+        //Log.d(TAG, printData("tagUid", tagUid));
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "password set successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
 
     public byte[] readSingleBlock(int blockNumber) {
         // sanity check
@@ -309,9 +366,57 @@ public class IcodeSlixMethods {
         return new SystemInformation(response);
     }
 
+    private byte[] getRandomNumber() {
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags
+                /* COMMAND */ GET_RANDOM_NUMBER_COMMAND, //(byte)0xb2, // command get random number
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP,
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
+        };
+        // manufacturer code is 04 for NXP tags
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return null;
+        }
+        writeToUiAppend(textView, printData("response", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "random number read successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
     /**
      * service methods
      */
+
+    private boolean checkPassword(byte[] password) {
+        if (password == null) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "password is NULL";
+            return false;
+        }
+        if (password.length != 4) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "password has wrong length (correct 4 bytes, found " + password.length + "bytes)";
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkPasswordIdentifier(byte passwordIdentifier) {
+        if (passwordIdentifier != (byte) 0x10) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "passwordIdentifier is not 0x10h, aborted";
+            return false;
+        }
+        return true;
+    }
 
     private boolean checkTagUid(byte[] tagUid) {
         if (tagUid == null) {
@@ -319,7 +424,7 @@ public class IcodeSlixMethods {
             errorCodeReason = "tagUid is NULL";
             return false;
         }
-        if (tagUid.length == 8) {
+        if (tagUid.length != 8) {
             errorCode = RESPONSE_PARAMETER_ERROR.clone();
             errorCodeReason = "tagUid has wrong length (correct 8 bytes, found " + tagUid.length + "bytes)";
             return false;
@@ -397,6 +502,27 @@ public class IcodeSlixMethods {
 
     private byte[] trimFirstByte(byte[] input) {
         return Arrays.copyOfRange(input, 1, (input.length));
+    }
+
+    private byte[] xor(byte[] dataA, byte[] dataB) {
+        // sanity checks
+        if ((dataA == null) || (dataB == null)) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "xor - dataA or dataB is NULL, aborted";
+            return null;
+        }
+        // sanity check - both arrays need to be of the same length
+        int dataALength = dataA.length;
+        int dataBLength = dataB.length;
+        if (dataALength != dataBLength) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "xor - dataA and dataB lengths are different, aborted (dataA: \" + dataALength + \" dataB: \" + dataBLength + \" bytes)";
+            return null;
+        }
+        for (int i = 0; i < dataALength; i++) {
+            dataA[i] ^= dataB[i];
+        }
+        return dataA;
     }
 
     private boolean initializeCard() {

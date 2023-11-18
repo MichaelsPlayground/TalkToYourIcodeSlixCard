@@ -3701,6 +3701,11 @@ C1h =
         success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);
 
+        writeToUiAppend(output, outputDivider);
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        success = icodeSlixMethods.setPasswordEasAfi(defaultPassword);
+        writeToUiAppend(output, "setPasswordEasAfi: " + success);
+
 /*
         writeToUiAppend(output, outputDivider);
         byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
