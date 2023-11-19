@@ -348,12 +348,12 @@ sum = 32 + 64 = 96 = 60h
  */
         // sanity checks
         byte[] cmd = new byte[]{
-                /* FLAGS   */ (byte) 0x26,
+                /* FLAGS   */ (byte) 0x04,
                 /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
                 /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
-                /* AFI     */ afi,
-                /* MASK LEN*/ maskLength,
-                /* MASK VAL*/ maskValue,
+      //          /* AFI     */ afi,
+                /* MASK LEN*/ (byte) 0x00,
+      //          /* MASK VAL*/ maskValue,
                 /* 1st BLK */ firstBlockNumber,
                 /* BLK NBR */ numberOfBlocks
         };

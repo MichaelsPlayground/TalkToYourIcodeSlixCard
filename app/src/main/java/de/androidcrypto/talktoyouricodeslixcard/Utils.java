@@ -178,6 +178,15 @@ public class Utils {
         }
     }
 
+    public static byte[] reverseByteArray(byte[] source) {
+        for (int i = 0; i < source.length / 2; i++) {
+            byte temp = source[i];
+            source[i] = source[source.length - i - 1];
+            source[source.length - i - 1] = temp;
+        }
+        return source;
+    }
+
 
     // converts an int to a 3 byte long array
     public static byte[] intTo3ByteArray(int value) {

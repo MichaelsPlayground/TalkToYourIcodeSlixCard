@@ -54,12 +54,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class MainActivityV1 extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivityV1.class.getName();
 
     private com.google.android.material.textfield.TextInputEditText output, errorCode;
-    private com.google.android.material.textfield.TextInputLayout errorCodeLayout;
+    private TextInputLayout errorCodeLayout;
 
 
     //private FileSettings selectedFileSettings;
@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         numberOfKeys.setText(String.valueOf((int) APPLICATION_NUMBER_OF_KEYS));
         fileStandardFileId.setText(String.valueOf((int) STANDARD_FILE_FREE_ACCESS_ID)); // preset is FREE ACCESS
 
-        activity = MainActivity.this;
+        activity = MainActivityV1.this;
 
 
 
@@ -2249,7 +2249,7 @@ fileSize: 256
                 };
                 final String selectedFolderString = "You are going to format the PICC " + "\n\n" +
                         "Do you want to proceed ?";
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivityV1.this);
 
                 builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
                         .setNegativeButton(android.R.string.no, dialogClickListener)
@@ -2272,7 +2272,7 @@ fileSize: 256
 
                 // important: Ntag424DnaMethods needs to be in TEST_MODE
                 Tag tag = null;
-                ntag424DnaMethods = new Ntag424DnaMethods(output, tag, MainActivity.this);
+                ntag424DnaMethods = new Ntag424DnaMethods(output, tag, MainActivityV1.this);
                 byte[] sesAuthEncKey = ntag424DnaMethods.getSesAuthEncKey(new byte[16], new byte[16], new byte[16]);
                 writeToUiAppend(output, printData("sesAuthEncKey", sesAuthEncKey));
                 writeToUiAppend(output, ntag424DnaMethods.getLogData());
@@ -3681,7 +3681,7 @@ C1h =
         invalidateAllSelections();
         writeToUiAppend(output, "NFC tag discovered");
 
-        icodeSlixMethods = new IcodeSlixMethods(tag, activity, output);
+        IcodeSlixMethods icodeSlixMethods = new IcodeSlixMethods(tag, activity, output);
 
         byte[] response;
         boolean success;
@@ -3696,47 +3696,80 @@ C1h =
 
         uid = icodeSlixMethods.getTagUid();
         dsfId = icodeSlixMethods.getDsfId();
-/*
+
         writeToUiAppend(output, outputDivider);
         Inventory inventory = new Inventory(dsfId, uid);
         writeToUiAppend(output, "inventory:\n" + inventory.dump());
-*/
+
 
         writeToUiAppend(output, outputDivider);
         response = icodeSlixMethods.readSingleBlock(0);
         writeToUiAppend(output, printData("readSingleBlock 00", response));
 
-        int startBlockNumber = 0;
-        int numberOfBlocks = 28;
-        byte[] multipleBlocksSecurityStatus = getMultipleBlocksSecurityStatus(startBlockNumber, numberOfBlocks);
-
-        byte afi = (byte) 0x00;
+        /*
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.getMultipleBlockSecurityStatus(0, 28);
+        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
+*/
 /*
+        writeToUiAppend(output, outputDivider);
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
-        setPasswordEasAfi(defaultPassword);
+        success = icodeSlixMethods.setPasswordEasAfi(defaultPassword);
+        writeToUiAppend(output, "setPasswordEasAfi: " + success);
 
+        writeToUiAppend(output, outputDivider);
         //byte afi = (byte) 0x01;
         byte afi = (byte) 0x00;
         //byte afi = (byte) 0xAE;
-        writeAfi(afi);
+        success = icodeSlixMethods.writeAfi(afi);
+        writeToUiAppend(output, "writeAfi: " + success);
 
+        writeToUiAppend(output, outputDivider);
         //dsfId = (byte) 0x02;
         byte dsfId = (byte) 0x00;
         //byte dsfId = (byte) 0xD1;
-        writeDfsId(dsfId);
+        success = icodeSlixMethods.writeDsfId(dsfId);
+        writeToUiAppend(output, "writeDsfId: " + success);
 
-        int blockNumber = 0;
-        byte[] dataBlock00 = readSingleBlock(blockNumber);
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.readSingleBlock(0);
+        writeToUiAppend(output, printData("readSingleBlock 00", response));
 
-        byte[] dataBlocks00To27 = readMultipleBlocks(blockNumber, numberOfBlocks);
-
+        writeToUiAppend(output, outputDivider);
         byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
-        writeSingleBlock(1, data);
+        success = icodeSlixMethods.writeSingleBlock(1, data);
+        writeToUiAppend(output, "writeBlock 01: " + success);
 
-        setEas();
-        resetEas();
-        easAlarm();
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.readMultipleBlocks(0, 28);
+        writeToUiAppend(output, printData("readMultipleBlocks 00-27\n", response));
+
 */
+
+        /*
+        writeToUiAppend(output, outputDivider);
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        success = icodeSlixMethods.setPasswordEasAfi(defaultPassword);
+        writeToUiAppend(output, "setPasswordEasAfi: " + success);
+        */
+/*
+        writeToUiAppend(output, outputDivider);
+        success = icodeSlixMethods.setEas();
+        writeToUiAppend(output, "setEas: " + success);
+*/
+/*
+        writeToUiAppend(output, outputDivider);
+        success = icodeSlixMethods.resetEas();
+        writeToUiAppend(output, "resetEas: " + success);
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.easAlarm();
+        writeToUiAppend(output, printData("easAlarm\n", response));
+        // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.getMultipleBlockSecurityStatus(0, 28);
+        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
 
         // playing with flags
         Iso15693Flags iFlags1 = new Iso15693Flags(false, true, false, false);
@@ -3760,28 +3793,12 @@ C1h =
         // result 0x60
 
         // playing with flags
-        Iso15693Flags iFlags5 = new Iso15693Flags(false, false, true, false);
-        iFlags5.setInventory1Flags(false, false, false, false);
-        byte iFlags5Byte = iFlags5.getFlagsByte();
-        writeToUiAppend(output, "iFlags5: " + Utils.byteToHex(iFlags5Byte));
-        // result 04
-
-        // playing with flags
         Iso15693Flags iFlags3 = new Iso15693Flags(false, true, true, false);
         iFlags3.setInventory1Flags(false, true, false, false);
         byte iFlags3Byte = iFlags3.getFlagsByte();
         writeToUiAppend(output, "iFlags3: " + Utils.byteToHex(iFlags3Byte));
         // result 0x26
 
-        afi = (byte) 0x01;
-
-        byte startBlock = (byte) 0x00;
-        byte numberOfBlocksByte = (byte) 0x1B; // 28
-        response = icodeSlixMethods.inventoryRead(afi, (byte) 0x00, (byte) 0x00, startBlock, numberOfBlocksByte);
-        writeToUiAppend(output, printData("inventoryRead\n", response));
-
-
-/*
         writeToUiAppend(output, outputDivider);
         byte maskLength = (byte) (0x01);
         byte maskValue = (byte) (0xff);
@@ -3791,94 +3808,25 @@ C1h =
         writeToUiAppend(output, printData("inventoryRead\n", response));
 
  */
-
-
-        //writeSingleBlock(data);
-
-        // formatTagNdef();
-
-    }
-
-
-
-    private byte[] getMultipleBlocksSecurityStatus(int blockNumber, int numberOfBlocks) {
-        System.out.println("blockNumber: " + blockNumber + " numberOfBlocks: " + numberOfBlocks);
-        System.out.println("icodeSlixMethods: " + icodeSlixMethods.toString());
+/*
         writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.getMultipleBlockSecurityStatus(blockNumber, numberOfBlocks);
-        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
-        return response;
-    }
-
-    private byte[] readSingleBlock(int blockNumber){
-        writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.readSingleBlock(0);
-        writeToUiAppend(output, printData("readSingleBlock 00", response));
-        return response;
-    }
-
-    private byte[] readMultipleBlocks(int blockNumber, int numberOfBlocks) {
-        writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.readMultipleBlocks(0, 28);
-        writeToUiAppend(output, printData("readMultipleBlocks from " + blockNumber + " read " + numberOfBlocks + " blocks", response));
-        return response;
-    }
-
-    private boolean writeAfi(byte afi) {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeAfi(afi);
-        writeToUiAppend(output, "writeAfi: " + success);
-        return success;
-    }
-
-    private boolean writeDfsId(byte dfsId) {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeDsfId(dsfId);
-        writeToUiAppend(output, "writeDsfId: " + success);
-        return success;
-    }
-
-    private boolean writeSingleBlock(int blockNumber, byte[] data) {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeSingleBlock(blockNumber, data);
+        byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
+        boolean success = icodeSlixMethods.writeSingleBlock(0, data);
         writeToUiAppend(output, "writeBlock 00: " + success);
-        return success;
-    }
 
-    private boolean setPasswordEasAfi(byte[] password) {
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.setPasswordEasAfi(password);
-        writeToUiAppend(output, "setPasswordEasAfi: " + success);
-        return success;
+        //byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
+        success = icodeSlixMethods.formatTagNdef();
+        writeToUiAppend(output, "formatTagNde: " + success);
+*/
+
     }
 
-    private boolean setEas() {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.setEas();
-        writeToUiAppend(output, "setEas: " + success);
-        return success;
-    }
 
-    private boolean resetEas() {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.resetEas();
-        writeToUiAppend(output, "resetEas: " + success);
-        return success;
-    }
-
-    private byte[] easAlarm() {
-        writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.easAlarm();
-        writeToUiAppend(output, printData("easAlarm\n", response));
-        return response;
-        // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
-    }
-
-    private boolean formatTagNdef() {
+    private void formatTagNdef() {
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.formatTagNdef();
         writeToUiAppend(output, "formatTagNde: " + success);
-        return success;
     }
 
 

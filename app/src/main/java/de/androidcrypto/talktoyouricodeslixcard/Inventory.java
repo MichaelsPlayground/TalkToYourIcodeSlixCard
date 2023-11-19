@@ -7,6 +7,7 @@ public class Inventory {
     private byte[] response;
     private byte dsfId;
     private byte[] uid;
+    private byte[] uidReversed;
     // analyzed data
     private byte uid7;
     private byte uid6IcManufacturerCode;
@@ -49,8 +50,8 @@ You can get the DSFID using tech.getDsfId().
 
     public Inventory(byte dsfId, byte[] uid) {
         this.dsfId = dsfId;
-        this.uid = uid;
-        if ((uid == null) || (uid.length != 8)) {
+        this.uidReversed = uid;
+        if ((uidReversed == null) || (uidReversed.length != 8)) {
             isValid = false;
             return;
         }
@@ -60,7 +61,7 @@ You can get the DSFID using tech.getDsfId().
 
     private void analyzeUid() {
         // we need to reverse the array
-        Utils.reverseByteArrayInPlace(uid);
+        uid = Utils.reverseByteArray(uidReversed);
         uid7 = uid[0];
         if (uid7 == (byte) 0xe0) isIcodeFamily = true;
         uid6IcManufacturerCode = uid[1];
@@ -219,6 +220,14 @@ You can get the DSFID using tech.getDsfId().
 
     public byte[] getUid() {
         return uid;
+    }
+
+    public byte[] getUidReversed() {
+        return uidReversed;
+    }
+
+    public byte getDsfId() {
+        return dsfId;
     }
 
     public byte getUid7() {
