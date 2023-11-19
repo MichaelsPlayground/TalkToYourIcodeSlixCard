@@ -3682,7 +3682,11 @@ C1h =
         IcodeSlixMethods icodeSlixMethods = new IcodeSlixMethods(tag, activity, output);
 
         writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.readSingleBlock(0);
+        byte[] response = icodeSlixMethods.getInventory();
+        writeToUiAppend(output, printData("getInventory", response));
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.readSingleBlock(0);
         writeToUiAppend(output, printData("readSingleBlock 00", response));
 
         writeToUiAppend(output, outputDivider);
@@ -3723,10 +3727,14 @@ C1h =
         // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
 
         writeToUiAppend(output, outputDivider);
-        byte maskLength = (byte) (0x08);
+        response = icodeSlixMethods.getMultipleBlockSecurityStatus(0, 28);
+        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
+
+        writeToUiAppend(output, outputDivider);
+        byte maskLength = (byte) (0x01);
         byte maskValue = (byte) (0xff);
         byte firstBlock = (byte) 0x00;
-        byte numberOfBlocks = (byte) 0x00;
+        byte numberOfBlocks = (byte) 0x01;
         response = icodeSlixMethods.inventoryRead(afi, maskLength, maskValue, firstBlock, numberOfBlocks);
         writeToUiAppend(output, printData("inventoryRead\n", response));
 /*

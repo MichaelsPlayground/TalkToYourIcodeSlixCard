@@ -104,6 +104,44 @@ public class IcodeSlixMethods {
         }
     }
 
+    public byte[] getInventory() {
+        byte[] cmd = new byte[] {
+/*
+bit table
+bit 1 0 RFU
+bit 2 1 Option flag default
+bit 3 0 Nr of slots 0 = all slots
+bit 4 0 AFI flag 0 = don't use afi
+bit 5 0 Protocol Extension (always 0)
+bit 6 0 Inventory flag (1 = see table 4) [32]
+bit 7 0 Uplink data read (0 = low, 1 = high) [64]
+bit 8 0 subcarrier (0 = ask, 1 = fsk)
+
+sum = 32 + 64 = 96 = 60h
+ */
+                // 26h is 38d
+                // 38 in binary is 100110
+                /* FLAGS   */ (byte)0x26, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ INVENTORY_COMMAND, //(byte)0x01, // command get Inventory
+                /* ???     */ (byte)0x00
+        };
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readMultipleBlocks", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "inventory read successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
     public boolean setPasswordEasAfi(byte[] password) {
         return setPassword(PASSWORD_IDENTIFIER_EAS_AFI, password);
     }
@@ -147,6 +185,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return false;
@@ -173,6 +212,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return false;
@@ -199,6 +239,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return false;
@@ -225,6 +266,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
@@ -239,9 +281,22 @@ public class IcodeSlixMethods {
 
     public byte[] inventoryRead(byte afi, byte maskLength, byte maskValue, byte firstBlockNumber, byte numberOfBlocks) {
         // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
+/*
+bit table
+bit 1 0 RFU
+bit 2 0 Option flag default
+bit 3 0 Nr of slots 0 = all slots
+bit 4 0 AFI flag 0 = don't use afi
+bit 5 0 Protocol Extension (always 0)
+bit 6 1 Inventory flag (1 = see table 4) [32]
+bit 7 1 Uplink data read (0 = low, 1 = high) [64]
+bit 8 0 subcarrier (0 = ask, 1 = fsk)
+
+sum = 32 + 64 = 96 = 60h
+ */
         // sanity checks
         byte[] cmd = new byte[]{
-                /* FLAGS   */ (byte) 0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* FLAGS   */ (byte) 0x60,
                 /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
                 /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
                 /* AFI     */ afi,
@@ -255,6 +310,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
@@ -262,6 +318,40 @@ public class IcodeSlixMethods {
         //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
+    public byte[] getMultipleBlockSecurityStatus(int blockNumber, int numberOfBlocks) {
+// sanity check
+        if (!checkBlockNumber(blockNumber)) {
+            return null;
+        }
+        if (!checkNumberOfBlocks(numberOfBlocks, blockNumber)) {
+            return null;
+        }
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ GET_MULTIPLE_BLOCK_SECURITY_STATUS_COMMAND, //(byte)0x2c, // command get Multiple Block Security Status
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+                /* OFFSET  */ (byte)(blockNumber & 0x0ff),
+                /* NUMBER  */ (byte)((numberOfBlocks - 1) & 0x0ff)
+        };
+        System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
+        cmd[10] = (byte)((blockNumber) & 0x0ff); // copy block number
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readMultipleBlocks", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "security data from blocks " + blockNumber + " ff read successfully");
         errorCode = RESPONSE_OK.clone();
         errorCodeReason = RESPONSE_OK_STRING;
         return trimFirstByte(response);
@@ -285,6 +375,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
@@ -318,6 +409,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
@@ -351,6 +443,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return false;
@@ -377,6 +470,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return false;
@@ -403,6 +497,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return false;
@@ -463,6 +558,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
@@ -487,6 +583,7 @@ public class IcodeSlixMethods {
         try {
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "IOException: " + e.getMessage();
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
@@ -699,73 +796,6 @@ public class IcodeSlixMethods {
         Utils.vibrateShort(activity.getApplicationContext());
         return true;
 
-        /*
-        try {
-            isoDep = IsoDep.get(tag);
-            if (isoDep == null) {
-                errorCode = RESPONSE_FAILURE.clone();
-                errorCodeReason = "isoDep is NULL (maybe it is not a NTAG424DNA tag ?), aborted";
-                return false;
-            }
-            Log.d(TAG, "tag is connected: " + isoDep.isConnected());
-            isoDep.connect();
-            Log.d(TAG, "tag is connected: " + isoDep.isConnected());
-            if (isoDep.isConnected()) {
-                isIsoDepConnected = true;
-                Log.d(TAG, "tag is connected to isoDep");
-            } else {
-                Log.d(TAG, "could not connect to isoDep, aborted");
-                isIsoDepConnected = false;
-                errorCode = RESPONSE_FAILURE.clone();
-                errorCodeReason = "could not connect to isoDep, aborted";
-                isoDep.close();
-                return false;
-            }
-            // initialize the Communication Adapter
-            communicationAdapter = new CommunicationAdapterNtag424Dna(isoDep, printToLog);
-            // get the version information
-            versionInfo = getVersionInfo();
-            if (versionInfo == null) {
-                errorCode = RESPONSE_FAILURE.clone();
-                errorCodeReason = "could not retrieve VersionInfo (maybe it is not a NTAG424DNA tag ?), aborted";
-                return false;
-            }
-
-            lrpAuthentication = new LrpAuthentication(isoDep);
-
-            if (versionInfo.getHardwareType() == (byte) 0x04) {
-                isTagNtag424Dna = true;
-                Log.d(TAG, "tag is identified as NTAG424DNA");
-                log(methodName, versionInfo.dump());
-                errorCode = RESPONSE_OK.clone();
-                errorCodeReason = "SUCCESS";
-                writeToUiAppend(textView, versionInfo.dump());
-                Utils.vibrateShort(activity.getBaseContext());
-                return true;
-            } else {
-                isTagNtag424Dna = false;
-                Log.d(TAG, "tag is NOT identified as NTAG424DNA, aborted");
-                writeToUiAppend(textView, "tag is NOT identified as NTAG424DNA, aborted");
-                log(methodName, versionInfo.dump());
-                errorCode = RESPONSE_FAILURE.clone();
-                errorCodeReason = "could not retrieve VersionInfo (maybe it is not a NTAG424DNA tag ?), aborted";
-                writeToUiAppend(textView, versionInfo.dump());
-                return false;
-            }
-        } catch (IOException e) {
-            errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "Exception: " + e.getMessage();
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-        */
     }
 
     /**
