@@ -376,7 +376,7 @@ sum = 32 + 64 = 96 = 60h
     }
 
     public byte[] getMultipleBlockSecurityStatus(int blockNumber, int numberOfBlocks) {
-// sanity check
+        // sanity check
         if (!checkBlockNumber(blockNumber)) {
             return null;
         }
@@ -397,8 +397,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "getMultipleBlockSecurityStatus IOException: " + e.getMessage();
+            Log.e(TAG, "getMultipleBlockSecurityStatus IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readMultipleBlocks", response));
@@ -428,8 +428,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "readSingleBlock IOException: " + e.getMessage();
+            Log.e(TAG, "readSingleBlock IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
@@ -462,8 +462,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "readMultipleBlocks IOException: " + e.getMessage();
+            Log.e(TAG, "readMultipleBlocks IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readMultipleBlocks", response));
@@ -483,6 +483,7 @@ sum = 32 + 64 = 96 = 60h
             return false;
         }
         byte[] cmd = new byte[] {
+                ///* FLAGS   */ (byte)0x60, // flags: addressed (= UID field present), use default OptionSet
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ WRITE_SINGLE_BLOCK_COMMAND, //(byte)0x21, // command write single block
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
@@ -496,8 +497,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "writeSingleBlock IOException: " + e.getMessage();
+            Log.e(TAG, "writeSingleBlock IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));

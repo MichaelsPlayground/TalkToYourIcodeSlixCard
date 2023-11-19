@@ -3693,6 +3693,7 @@ C1h =
         Inventory inventory = new Inventory(response);
         writeToUiAppend(output, "inventory:\n" + inventory.dump());
          */
+
         uid = icodeSlixMethods.getTagUid();
         dsfId = icodeSlixMethods.getDsfId();
 
@@ -3704,23 +3705,47 @@ C1h =
         response = icodeSlixMethods.readSingleBlock(0);
         writeToUiAppend(output, printData("readSingleBlock 00", response));
 
+        /*
         writeToUiAppend(output, outputDivider);
-        response = icodeSlixMethods.readMultipleBlocks(0, 28);
-        writeToUiAppend(output, printData("readMultipleBlocks 00-27\n", response));
+        response = icodeSlixMethods.getMultipleBlockSecurityStatus(0, 28);
+        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
+*/
+/*
+        writeToUiAppend(output, outputDivider);
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        success = icodeSlixMethods.setPasswordEasAfi(defaultPassword);
+        writeToUiAppend(output, "setPasswordEasAfi: " + success);
 
         writeToUiAppend(output, outputDivider);
-        byte afi = (byte) 0x01;
-        //byte afi = (byte) 0x00;
+        //byte afi = (byte) 0x01;
+        byte afi = (byte) 0x00;
         //byte afi = (byte) 0xAE;
         success = icodeSlixMethods.writeAfi(afi);
         writeToUiAppend(output, "writeAfi: " + success);
 
         writeToUiAppend(output, outputDivider);
-        dsfId = (byte) 0x02;
-        //byte dsfId = (byte) 0x00;
+        //dsfId = (byte) 0x02;
+        byte dsfId = (byte) 0x00;
         //byte dsfId = (byte) 0xD1;
         success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.readSingleBlock(0);
+        writeToUiAppend(output, printData("readSingleBlock 00", response));
+
+        writeToUiAppend(output, outputDivider);
+        byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
+        success = icodeSlixMethods.writeSingleBlock(1, data);
+        writeToUiAppend(output, "writeBlock 01: " + success);
+
+        writeToUiAppend(output, outputDivider);
+        response = icodeSlixMethods.readMultipleBlocks(0, 28);
+        writeToUiAppend(output, printData("readMultipleBlocks 00-27\n", response));
+
+*/
+
+
 
         /*
         writeToUiAppend(output, outputDivider);
@@ -3733,7 +3758,7 @@ C1h =
         success = icodeSlixMethods.setEas();
         writeToUiAppend(output, "setEas: " + success);
 */
-
+/*
         writeToUiAppend(output, outputDivider);
         success = icodeSlixMethods.resetEas();
         writeToUiAppend(output, "resetEas: " + success);
@@ -3747,6 +3772,34 @@ C1h =
         response = icodeSlixMethods.getMultipleBlockSecurityStatus(0, 28);
         writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
 
+        // playing with flags
+        Iso15693Flags iFlags1 = new Iso15693Flags(false, true, false, false);
+        iFlags1.setInventory0Flags(false, false, false, false);
+        byte iFlags1Byte = iFlags1.getFlagsByte();
+        writeToUiAppend(output, "iFlags1: " + Utils.byteToHex(iFlags1Byte));
+        // result 0x02
+
+        // playing with flags
+        Iso15693Flags iFlags2 = new Iso15693Flags(false, false, false, false);
+        iFlags2.setInventory0Flags(false, true, false, false);
+        byte iFlags2Byte = iFlags2.getFlagsByte();
+        writeToUiAppend(output, "iFlags2: " + Utils.byteToHex(iFlags2Byte));
+        // result 0x20
+
+        // playing with flags
+        Iso15693Flags iFlags4 = new Iso15693Flags(false, false, false, false);
+        iFlags4.setInventory0Flags(false, true, true, false);
+        byte iFlags4Byte = iFlags4.getFlagsByte();
+        writeToUiAppend(output, "iFlags4: " + Utils.byteToHex(iFlags4Byte));
+        // result 0x60
+
+        // playing with flags
+        Iso15693Flags iFlags3 = new Iso15693Flags(false, true, true, false);
+        iFlags3.setInventory1Flags(false, true, false, false);
+        byte iFlags3Byte = iFlags3.getFlagsByte();
+        writeToUiAppend(output, "iFlags3: " + Utils.byteToHex(iFlags3Byte));
+        // result 0x26
+
         writeToUiAppend(output, outputDivider);
         byte maskLength = (byte) (0x01);
         byte maskValue = (byte) (0xff);
@@ -3754,6 +3807,8 @@ C1h =
         byte numberOfBlocks = (byte) 0x01;
         response = icodeSlixMethods.inventoryRead(afi, maskLength, maskValue, firstBlock, numberOfBlocks);
         writeToUiAppend(output, printData("inventoryRead\n", response));
+
+ */
 /*
         writeToUiAppend(output, outputDivider);
         byte[] data = "ABCD".getBytes(StandardCharsets.UTF_8);
@@ -3766,65 +3821,6 @@ C1h =
         writeToUiAppend(output, "formatTagNde: " + success);
 */
 
-/*
-        ntag424DnaMethods = new Ntag424DnaMethods(output, tag, activity);
-
-        // self test for authenticateLrpEv2First
-        ntag424DnaMethods.authenticateLrpEv2FirstTest();
-
- */
-/*
-        isoDep = null;
-        try {
-            isoDep = IsoDep.get(tag);
-            if (isoDep != null) {
-                // Make a Vibration
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(150, 10));
-                } else {
-                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(200);
-                }
-
-                runOnUiThread(() -> {
-                    output.setText("");
-                    errorCode.setText("");
-                    errorCode.setBackgroundColor(getResources().getColor(R.color.white));
-                });
-                isoDep.connect();
-                if (!isoDep.isConnected()) {
-                    writeToUiAppendBorderColor(errorCode, errorCodeLayout, "could not connect to the tag, aborted", COLOR_RED);
-                    isoDep.close();
-                    return;
-                }
-                desfireAuthenticate = new DesfireAuthenticate(isoDep, true); // true means all data is logged
-
-                //desfireAuthenticateProximity = new DesfireAuthenticateProximity(isoDep, true); // true means all data is logged
-                desfireAuthenticateLegacy = new DesfireAuthenticateLegacy(isoDep, true); // true means all data is logged
-                desfireAuthenticateEv2 = new DesfireAuthenticateEv2(isoDep, true); // true means all data is logged
-
-                // setup the communication adapter
-                //adapter = new CommunicationAdapter(isoDep, true);
-
-                // get tag ID
-                tagIdByte = tag.getId();
-                writeToUiAppend(output, "tag id: " + Utils.bytesToHex(tagIdByte));
-                Log.d(TAG, "tag id: " + Utils.bytesToHex(tagIdByte));
-
-                writeToUiAppend(output, "NFC tag connected");
-                writeToUiAppendBorderColor(errorCode, errorCodeLayout, "The app and DESFire tag are ready to use", COLOR_GREEN);
-            }
-
-        } catch (IOException e) {
-            writeToUiAppend(output, "ERROR: IOException " + e.getMessage());
-            writeToUiAppendBorderColor(errorCode, errorCodeLayout, "IOException: " + e.getMessage(), COLOR_RED);
-            e.printStackTrace();
-        } catch (Exception e) {
-            writeToUiAppend(output, "ERROR: Exception " + e.getMessage());
-            writeToUiAppendBorderColor(errorCode, errorCodeLayout, "Exception: " + e.getMessage(), COLOR_RED);
-            e.printStackTrace();
-        }
-*/
     }
 
     @Override
