@@ -283,6 +283,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
     private IsoDep isoDep;
     private byte[] tagIdByte;
+    private byte dsfId;
+    private byte[] uid;
 
     private String exportString = "Desfire Authenticate Legacy"; // takes the log data for export
     private String exportStringFileName = "auth.html"; // takes the log data for export
@@ -3681,9 +3683,22 @@ C1h =
 
         IcodeSlixMethods icodeSlixMethods = new IcodeSlixMethods(tag, activity, output);
 
+        byte[] response;
+        boolean success;
+
+        /*
         writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.getInventory();
+        response = icodeSlixMethods.getInventory();
         writeToUiAppend(output, printData("getInventory", response));
+        Inventory inventory = new Inventory(response);
+        writeToUiAppend(output, "inventory:\n" + inventory.dump());
+         */
+        uid = icodeSlixMethods.getTagUid();
+        dsfId = icodeSlixMethods.getDsfId();
+
+        writeToUiAppend(output, outputDivider);
+        Inventory inventory = new Inventory(dsfId, uid);
+        writeToUiAppend(output, "inventory:\n" + inventory.dump());
 
         writeToUiAppend(output, outputDivider);
         response = icodeSlixMethods.readSingleBlock(0);
@@ -3694,13 +3709,15 @@ C1h =
         writeToUiAppend(output, printData("readMultipleBlocks 00-27\n", response));
 
         writeToUiAppend(output, outputDivider);
-        byte afi = (byte) 0x00;
+        byte afi = (byte) 0x01;
+        //byte afi = (byte) 0x00;
         //byte afi = (byte) 0xAE;
-        boolean success = icodeSlixMethods.writeAfi(afi);
+        success = icodeSlixMethods.writeAfi(afi);
         writeToUiAppend(output, "writeAfi: " + success);
 
         writeToUiAppend(output, outputDivider);
-        byte dsfId = (byte) 0x00;
+        dsfId = (byte) 0x02;
+        //byte dsfId = (byte) 0x00;
         //byte dsfId = (byte) 0xD1;
         success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);

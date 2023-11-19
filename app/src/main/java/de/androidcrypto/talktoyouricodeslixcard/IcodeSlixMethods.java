@@ -105,6 +105,19 @@ public class IcodeSlixMethods {
     }
 
     public byte[] getInventory() {
+/*
+https://stackoverflow.com/a/37098162/8166854 answer by Michael Roland, May 8, 2016
+The Android NFC stack automatically handles polling (searching for tags various tag technologies/protocols),
+anti-collision (enumeration of multiple tags within one tag technology/protocol) and activation (intitiating
+communication with one specific tag) for you. You should, therefore, never send commands used for anti-collision
+and activation yourself. The Inventory command is one such command (that is used to discover tags in range).
+
+With regard to the Inventory command, there is typically no need to send this command. All the information that
+you would get from this command is already provided by the Android NFC API:
+
+You can get the UID using tag.getId().
+You can get the DSFID using tech.getDsfId().
+ */
         byte[] cmd = new byte[] {
 /*
 bit table
@@ -115,7 +128,7 @@ bit 4 0 AFI flag 0 = don't use afi
 bit 5 0 Protocol Extension (always 0)
 bit 6 0 Inventory flag (1 = see table 4) [32]
 bit 7 0 Uplink data read (0 = low, 1 = high) [64]
-bit 8 0 subcarrier (0 = ask, 1 = fsk)
+bit 8 0 subcarrier (0 = ask, 1 = fsk), ask = Amplitude-shift keying, fsk = Frequency-shift keying
 
 sum = 32 + 64 = 96 = 60h
  */
@@ -196,6 +209,45 @@ sum = 32 + 64 = 96 = 60h
         errorCode = RESPONSE_OK.clone();
         errorCodeReason = RESPONSE_OK_STRING;
         return true;
+    }
+
+    public boolean passwordProtectEas() {
+        // Once the EAS password protection is enabled, it is not possible to
+        // change back to unprotected EAS.
+        // Option flag set to logic 0: EAS will be password protected
+
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ PASSWORD_PROTECT_EAS_AFI_COMMAND, //(byte)0xa6, // command password protection eas/afi
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "IOException: " + e.getMessage();
+            Log.e(TAG, "IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
+    public boolean passwordProtectAfi() {
+        // Once the AFI password protection is enabled, it is not possible to
+        // change back to unprotected AFI.
+        // Option flag set to logic 1: AFI will be password protected
+
+
+        return false;
     }
 
     public boolean setEas() {
@@ -296,7 +348,7 @@ sum = 32 + 64 = 96 = 60h
  */
         // sanity checks
         byte[] cmd = new byte[]{
-                /* FLAGS   */ (byte) 0x60,
+                /* FLAGS   */ (byte) 0x26,
                 /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
                 /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
                 /* AFI     */ afi,
@@ -825,5 +877,13 @@ sum = 32 + 64 = 96 = 60h
 
     public String getErrorCodeReason() {
         return errorCodeReason;
+    }
+
+    public byte[] getTagUid() {
+        return tagUid;
+    }
+
+    public byte getDsfId() {
+        return dsfId;
     }
 }

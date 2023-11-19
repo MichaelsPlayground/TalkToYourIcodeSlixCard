@@ -60,8 +60,9 @@ responseGetSystemInfoFrame1bytesAddress length: 15 data: 000fc8504121662416e0020
 
 ```
 
+Lookup table for IC Manufacturer Names: https://en.wikipedia.org/wiki/ISO/IEC_15693
 
-
+Lookup table for ICODE SLIX tag types: ICODE as NFC Type ICODE Tag AN11042.pdf, page 7
 
 # The following description is from an old project !
 
