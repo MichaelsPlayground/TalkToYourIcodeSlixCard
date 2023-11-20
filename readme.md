@@ -48,6 +48,8 @@ ICODE as NFC Type ICODE Tag AN11042: https://dangerousthings.com/wp-content/uplo
 
 http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/APPLICATION_NOTE/CD00266055.pdf
 
+AFI table (page 71): https://www.st.com/resource/en/datasheet/lri512.pdf
+
 ## How to buy them ?
 
 If you are going to buy these tags just have a look at the offer by **shopNfc**: 

@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
-        byte afi = (byte) 0x06;
+        byte afi = (byte) 0x00;
         writeAfi(afi);
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
