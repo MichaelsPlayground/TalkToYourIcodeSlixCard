@@ -2,6 +2,10 @@
 
 This is an extract of the official datasheet for *ICODE SLIX SL2S2002_SL2S2102* and other sources.
 
+For these kind of tags there are 2 possible options - the regular and the addressed one. In my 
+examples I'm using always the addressed option; for this mode the tags needs the tag's UID as 
+variable.
+
 Below you find all supported commands and examples:
 
 # Mandatory commands
@@ -17,6 +21,8 @@ Below you find all supported commands and examples:
 ## Write single block (Command code = 21h)
 
 ## Lock block (Command code = 22h)
+
+For an addressed Lock Block command, the Option and Address flags (0x90) must be set.
 
 **This is a permanent = unchangeable setting !**
 

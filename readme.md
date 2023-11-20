@@ -2,6 +2,13 @@
 
 This is a sample app to demonstrate how to work with an ICODE SLIX (SL2S2002) tag.
 
+## Tag features
+
+• Password protected Electronic Article Surveillance (EAS)
+• Password protected Application Family Identifier (AFI)
+• Data Storage Format Identifier (DSFID)
+
+
 ## technical data of the tag
 
 Memory Information: 112 bytes, 28 blocks, with 4 bytes per block
