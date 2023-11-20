@@ -50,6 +50,8 @@ http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/APPLICAT
 
 AFI table (page 71): https://www.st.com/resource/en/datasheet/lri512.pdf
 
+ISO 15693 spec: http://olmicrowaves.com/menucontents/designsupport/rfid/ISO15693-3.pdf
+
 ## How to buy them ?
 
 If you are going to buy these tags just have a look at the offer by **shopNfc**: 
