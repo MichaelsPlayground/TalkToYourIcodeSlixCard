@@ -3696,11 +3696,10 @@ C1h =
 
         uid = icodeSlixMethods.getTagUid();
         dsfId = icodeSlixMethods.getDsfId();
-/*
+
         writeToUiAppend(output, outputDivider);
         Inventory inventory = new Inventory(dsfId, uid);
         writeToUiAppend(output, "inventory:\n" + inventory.dump());
-*/
 
         writeToUiAppend(output, outputDivider);
         response = icodeSlixMethods.readSingleBlock(0);
@@ -3713,15 +3712,17 @@ C1h =
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
 */
-
 /*
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         byte[] easAfiPassword = Utils.hexStringToByteArray("12345678");
-        writePasswordEasAfi(easAfiPassword);
+        setPasswordEasAfi(easAfiPassword);
+        writePasswordEasAfi(defaultPassword);
+        //writePasswordEasAfi(easAfiPassword);
 */
-
+/*
         byte afi = (byte) 0x03;
         writeAfi(afi);
-
+*/
 
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
@@ -3786,11 +3787,14 @@ C1h =
         writeToUiAppend(output, "iFlags3: " + Utils.byteToHex(iFlags3Byte));
         // result 0x26
 
-        afi = (byte) 0x01;
+        byte afi = (byte) 0x01;
 
         byte startBlock = (byte) 0x00;
         byte numberOfBlocksByte = (byte) 0x1B; // 28
-        response = icodeSlixMethods.inventoryRead(afi, (byte) 0x00, (byte) 0x00, startBlock, numberOfBlocksByte);
+
+        response = icodeSlixMethods.inventoryRead(startBlock, numberOfBlocksByte);
+
+        //response = icodeSlixMethods.inventoryRead(afi, (byte) 0x00, (byte) 0x00, startBlock, numberOfBlocksByte);
         writeToUiAppend(output, printData("inventoryRead\n", response));
 
 

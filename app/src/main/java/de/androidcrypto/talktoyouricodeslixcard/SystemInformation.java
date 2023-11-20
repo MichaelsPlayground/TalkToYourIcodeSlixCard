@@ -44,6 +44,7 @@ public class SystemInformation {
 
     public String dump() {
         StringBuilder sb = new StringBuilder();
+        sb.append("SYSTEMINFORMATION").append("\n");
         sb.append("statusBits: ").append(Utils.byteToHex(statusBits)).append("\n");
         sb.append("informationFlags: ").append(Utils.byteToHex(informationFlags)).append("\n");
         sb.append("uid: ").append(Utils.bytesToHex(uid)).append("\n");

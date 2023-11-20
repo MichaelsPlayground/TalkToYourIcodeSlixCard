@@ -32,6 +32,7 @@ public class IcodeSlixMethods {
     private byte dsfId;
     private byte[] responseInventory;
     private SystemInformation systemInformation;
+    private Inventory inventory;
     private byte[] responseGetSystemInfoFrame1bytesAddress;
 
     // mandatory commands as defined in ISO/IEC 15693-3
@@ -88,6 +89,7 @@ public class IcodeSlixMethods {
     private int NUMBER_OF_BLOCKS;
     private int BYTES_PER_BLOCK;
     private int MEMORY_SIZE;
+    private byte MANUFACTURER_CODE;
 
     public IcodeSlixMethods(Tag tag, Activity activity, TextView textView) {
         this.tag = tag;
@@ -361,8 +363,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "easAlarm IOException: " + e.getMessage();
+            Log.e(TAG, "easAlarm IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
@@ -372,6 +374,51 @@ sum = 32 + 64 = 96 = 60h
         errorCodeReason = RESPONSE_OK_STRING;
         return trimFirstByte(response);
     }
+
+    public byte[] inventoryRead(byte firstBlockNumber, byte numberOfBlocks) {
+        // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
+/*
+bit table
+bit 1 0 RFU
+bit 2 0 Option flag default
+bit 3 0 Nr of slots 0 = all slots
+bit 4 0 AFI flag 0 = don't use afi
+bit 5 0 Protocol Extension (always 0)
+bit 6 1 Inventory flag (1 = see table 4) [32]
+bit 7 1 Uplink data read (0 = low, 1 = high) [64]
+bit 8 0 subcarrier (0 = ask, 1 = fsk)
+
+sum = 32 + 64 = 96 = 60h
+ */
+        // sanity checks
+        byte[] cmd = new byte[]{
+                /* FLAGS   */ (byte) 0x04,
+                /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                //          /* AFI     */ afi,
+                /* MASK LEN*/ (byte) 0x00,
+                //          /* MASK VAL*/ maskValue,
+                /* 1st BLK */ firstBlockNumber,
+                /* BLK NBR */ numberOfBlocks
+        };
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "inventoryRead IOException: " + e.getMessage();
+            Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
 
     public byte[] inventoryRead(byte afi, byte maskLength, byte maskValue, byte firstBlockNumber, byte numberOfBlocks) {
         // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
@@ -383,7 +430,7 @@ bit 3 0 Nr of slots 0 = all slots
 bit 4 0 AFI flag 0 = don't use afi
 bit 5 0 Protocol Extension (always 0)
 bit 6 1 Inventory flag (1 = see table 4) [32]
-bit 7 1 Uplink data read (0 = low, 1 = high) [64]
+bit 7 0 Uplink data read (0 = low, 1 = high) [64]
 bit 8 0 subcarrier (0 = ask, 1 = fsk)
 
 sum = 32 + 64 = 96 = 60h
@@ -405,8 +452,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "inventoryRead IOException: " + e.getMessage();
+            Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
@@ -866,6 +913,7 @@ sum = 32 + 64 = 96 = 60h
             Log.d(TAG, printData("responseInventory", responseInventory));
             writeToUiAppend(textView, printData("responseInventory", responseInventory));
             systemInformation = getSystemInformation();
+            inventory = new Inventory(systemInformation.getDsfId(), systemInformation.getUid());
             if (systemInformation == null) {
                 writeToUiAppend(textView, "Could not retrieve system information, aborted");
                 errorCode = RESPONSE_FAILURE.clone();
@@ -874,6 +922,7 @@ sum = 32 + 64 = 96 = 60h
                 NUMBER_OF_BLOCKS = systemInformation.getNumberOfBlocks();
                 BYTES_PER_BLOCK = systemInformation.getBytesPerBlock();
                 MEMORY_SIZE = systemInformation.getMemorySizeInt();
+
                 Log.d(TAG, systemInformation.dump());
                 writeToUiAppend(textView, systemInformation.dump());
                 errorCode = RESPONSE_OK.clone();

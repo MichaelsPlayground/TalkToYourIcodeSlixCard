@@ -46,6 +46,8 @@ Designing an NFC Android Application for M24SR and M24LR devices AN4430: https:/
 
 ICODE as NFC Type ICODE Tag AN11042: https://dangerousthings.com/wp-content/uploads/I-CODE_SLI-NFC-AN11042.pdf
 
+http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/APPLICATION_NOTE/CD00266055.pdf
+
 ## How to buy them ?
 
 If you are going to buy these tags just have a look at the offer by **shopNfc**: 

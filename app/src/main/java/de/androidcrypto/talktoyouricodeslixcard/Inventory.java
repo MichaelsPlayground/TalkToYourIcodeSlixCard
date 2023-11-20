@@ -37,7 +37,7 @@ You can get the DSFID using tech.getDsfId().
  */
 
     public Inventory(byte[] response) {
-        this.response = response;
+        this.response = response.clone();
         if ((response == null) || (response.length != 9)) {
             isValid = false;
             return;
@@ -50,7 +50,7 @@ You can get the DSFID using tech.getDsfId().
 
     public Inventory(byte dsfId, byte[] uid) {
         this.dsfId = dsfId;
-        this.uidReversed = uid;
+        this.uidReversed = uid.clone();
         if ((uidReversed == null) || (uidReversed.length != 8)) {
             isValid = false;
             return;
@@ -80,6 +80,7 @@ You can get the DSFID using tech.getDsfId().
 
     public String dump() {
         StringBuilder sb = new StringBuilder();
+        sb.append("INVENTORY").append("\n");
         sb.append("response: ").append(Utils.bytesToHex(response)).append("\n");
         sb.append("dsfId: ").append(Utils.byteToHex(dsfId)).append("\n");
         sb.append("uid: ").append(Utils.bytesToHex(uid)).append("\n");
