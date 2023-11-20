@@ -256,6 +256,7 @@ sum = 32 + 64 = 96 = 60h
         // Once the EAS password protection is enabled, it is not possible to
         // change back to unprotected EAS.
         // Option flag set to logic 0: EAS will be password protected
+        // Option flag set to logic 1: AFI will be password protected
 
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet

@@ -3712,12 +3712,14 @@ C1h =
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
+*/
 
+/*
         byte[] easAfiPassword = Utils.hexStringToByteArray("12345678");
         writePasswordEasAfi(easAfiPassword);
 */
 
-        byte afi = (byte) 0x02;
+        byte afi = (byte) 0x03;
         writeAfi(afi);
 
 
