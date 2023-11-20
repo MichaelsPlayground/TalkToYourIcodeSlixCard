@@ -394,7 +394,8 @@ sum = 32 + 64 = 96 = 60h
         byte[] cmd = new byte[]{
                 /* FLAGS   */ (byte) 0x04,
                 /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
-                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* MANUF ID*/ MANUFACTURER_CODE,
+                //      /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
                 //          /* AFI     */ afi,
                 /* MASK LEN*/ (byte) 0x00,
                 //          /* MASK VAL*/ maskValue,
@@ -738,6 +739,77 @@ sum = 32 + 64 = 96 = 60h
         return trimFirstByte(response);
     }
 
+    private boolean initializeCard() {
+        String methodName = "initializeCard";
+        if (tag == null) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "tag is NULL, aborted";
+            return false;
+        }
+        tagUid = tag.getId();
+        Log.d(TAG, printData("tagUid", tagUid));
+        writeToUiAppend(textView, printData("tagUid", tagUid));
+        nfcV = NfcV.get(tag);
+        if (nfcV == null) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "NFCV is NULL (maybe it is not an Icode SLIX tag ?), aborted";
+            return false;
+        }
+        // get data from the tag
+        techList = tag.getTechList();
+        Log.d(TAG, "techList: " + Arrays.toString(techList));
+        writeToUiAppend(textView, "techList: " + Arrays.toString(techList));
+        maxTranceiveLength = nfcV.getMaxTransceiveLength();
+        Log.d(TAG, "maxTranceiveLength: " + maxTranceiveLength + " bytes");
+        writeToUiAppend(textView, "maxTranceiveLength: " + maxTranceiveLength + " bytes");
+        responseFlags = nfcV.getResponseFlags();
+        Log.d(TAG, "responseFlags: " + Utils.byteToHex(responseFlags));
+        writeToUiAppend(textView, "responseFlags: " + Utils.byteToHex(responseFlags));
+        dsfId = nfcV.getDsfId();
+        Log.d(TAG, "dsfId: " + Utils.byteToHex(dsfId));
+        writeToUiAppend(textView, "dsfId: " + Utils.byteToHex(dsfId));
+        // connect to the tag
+        try {
+            nfcV.connect();
+            Log.d(TAG, "tag is connected");
+            writeToUiAppend(textView, "tag is connected");
+            // get the inventory
+            // inventory
+            byte[] UIDFrame = new byte[] { (byte) 0x26, (byte) 0x01, (byte) 0x00 };
+            responseInventory = nfcV.transceive(UIDFrame);
+            Log.d(TAG, printData("responseInventory", responseInventory));
+            writeToUiAppend(textView, printData("responseInventory", responseInventory));
+            systemInformation = getSystemInformation();
+            inventory = new Inventory(systemInformation.getDsfId(), systemInformation.getUid());
+            if (systemInformation == null) {
+                writeToUiAppend(textView, "Could not retrieve system information, aborted");
+                errorCode = RESPONSE_FAILURE.clone();
+                errorCodeReason = "Could not retrieve system information, aborted";
+            } else {
+                MANUFACTURER_CODE = inventory.getUid6IcManufacturerCode();
+                NUMBER_OF_BLOCKS = systemInformation.getNumberOfBlocks();
+                BYTES_PER_BLOCK = systemInformation.getBytesPerBlock();
+                MEMORY_SIZE = systemInformation.getMemorySizeInt();
+
+                Log.d(TAG, systemInformation.dump());
+                writeToUiAppend(textView, systemInformation.dump());
+                errorCode = RESPONSE_OK.clone();
+                errorCodeReason = RESPONSE_OK_STRING;
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, "Error on connecting the tag: " + e.getMessage());
+            writeToUiAppend(textView, "Error on connecting the tag: " + e.getMessage());
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "IOException: " + e.getMessage();
+            return false;
+        }
+
+        Utils.vibrateShort(activity.getApplicationContext());
+        return true;
+
+    }
+
     /**
      * service methods
      */
@@ -872,75 +944,7 @@ sum = 32 + 64 = 96 = 60h
         return dataA;
     }
 
-    private boolean initializeCard() {
-        String methodName = "initializeCard";
-        if (tag == null) {
-            errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "tag is NULL, aborted";
-            return false;
-        }
-        tagUid = tag.getId();
-        Log.d(TAG, printData("tagUid", tagUid));
-        writeToUiAppend(textView, printData("tagUid", tagUid));
-        nfcV = NfcV.get(tag);
-        if (nfcV == null) {
-            errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "NFCV is NULL (maybe it is not an Icode SLIX tag ?), aborted";
-            return false;
-        }
-        // get data from the tag
-        techList = tag.getTechList();
-        Log.d(TAG, "techList: " + Arrays.toString(techList));
-        writeToUiAppend(textView, "techList: " + Arrays.toString(techList));
-        maxTranceiveLength = nfcV.getMaxTransceiveLength();
-        Log.d(TAG, "maxTranceiveLength: " + maxTranceiveLength + " bytes");
-        writeToUiAppend(textView, "maxTranceiveLength: " + maxTranceiveLength + " bytes");
-        responseFlags = nfcV.getResponseFlags();
-        Log.d(TAG, "responseFlags: " + Utils.byteToHex(responseFlags));
-        writeToUiAppend(textView, "responseFlags: " + Utils.byteToHex(responseFlags));
-        dsfId = nfcV.getDsfId();
-        Log.d(TAG, "dsfId: " + Utils.byteToHex(dsfId));
-        writeToUiAppend(textView, "dsfId: " + Utils.byteToHex(dsfId));
-        // connect to the tag
-        try {
-            nfcV.connect();
-            Log.d(TAG, "tag is connected");
-            writeToUiAppend(textView, "tag is connected");
-            // get the inventory
-            // inventory
-            byte[] UIDFrame = new byte[] { (byte) 0x26, (byte) 0x01, (byte) 0x00 };
-            responseInventory = nfcV.transceive(UIDFrame);
-            Log.d(TAG, printData("responseInventory", responseInventory));
-            writeToUiAppend(textView, printData("responseInventory", responseInventory));
-            systemInformation = getSystemInformation();
-            inventory = new Inventory(systemInformation.getDsfId(), systemInformation.getUid());
-            if (systemInformation == null) {
-                writeToUiAppend(textView, "Could not retrieve system information, aborted");
-                errorCode = RESPONSE_FAILURE.clone();
-                errorCodeReason = "Could not retrieve system information, aborted";
-            } else {
-                NUMBER_OF_BLOCKS = systemInformation.getNumberOfBlocks();
-                BYTES_PER_BLOCK = systemInformation.getBytesPerBlock();
-                MEMORY_SIZE = systemInformation.getMemorySizeInt();
 
-                Log.d(TAG, systemInformation.dump());
-                writeToUiAppend(textView, systemInformation.dump());
-                errorCode = RESPONSE_OK.clone();
-                errorCodeReason = RESPONSE_OK_STRING;
-            }
-
-        } catch (IOException e) {
-            Log.e(TAG, "Error on connecting the tag: " + e.getMessage());
-            writeToUiAppend(textView, "Error on connecting the tag: " + e.getMessage());
-            errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            return false;
-        }
-
-        Utils.vibrateShort(activity.getApplicationContext());
-        return true;
-
-    }
 
     /**
      * section for UI related tasks

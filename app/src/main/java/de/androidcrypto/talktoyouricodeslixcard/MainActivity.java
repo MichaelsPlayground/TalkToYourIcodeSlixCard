@@ -3699,7 +3699,7 @@ C1h =
 
         writeToUiAppend(output, outputDivider);
         Inventory inventory = new Inventory(dsfId, uid);
-        writeToUiAppend(output, "inventory:\n" + inventory.dump());
+        writeToUiAppend(output, inventory.dump());
 
         writeToUiAppend(output, outputDivider);
         response = icodeSlixMethods.readSingleBlock(0);
