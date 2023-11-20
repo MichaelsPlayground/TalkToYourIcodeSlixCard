@@ -199,13 +199,54 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "setPassword IOException: " + e.getMessage();
+            Log.e(TAG, "setPassword IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "password set successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
+    public boolean writePasswordEasAfi(byte[] password) {
+        return writePassword(PASSWORD_IDENTIFIER_EAS_AFI, password);
+    }
+
+    private boolean writePassword(byte passwordIdentifier, byte[] password) {
+        // sanity checks
+        if (!checkPassword(password)) {
+            return false;
+        }
+        if (!checkPasswordIdentifier(passwordIdentifier)) {
+            return false;
+        }
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ WRITE_PASSWORD_COMMAND, //(byte)0xb4, // command write password
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+                /* PASS ID */ passwordIdentifier,
+                /* PASSWORD*/ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        System.arraycopy(password, 0, cmd, 12, 4); // copy xored password
+        //Log.d(TAG, printData("tagUid", tagUid));
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "writePassword IOException: " + e.getMessage();
+            Log.e(TAG, "writePassword IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "password written successfully");
         errorCode = RESPONSE_OK.clone();
         errorCodeReason = RESPONSE_OK_STRING;
         return true;

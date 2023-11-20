@@ -3709,10 +3709,21 @@ C1h =
         int startBlockNumber = 0;
         int numberOfBlocks = 28;
         byte[] multipleBlocksSecurityStatus = getMultipleBlocksSecurityStatus(startBlockNumber, numberOfBlocks);
-
-        byte afi = (byte) 0x00;
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        setPasswordEasAfi(defaultPassword);
+
+        byte[] easAfiPassword = Utils.hexStringToByteArray("12345678");
+        writePasswordEasAfi(easAfiPassword);
+*/
+
+        byte afi = (byte) 0x02;
+        writeAfi(afi);
+
+
+/*
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        byte[] easAfiPassword = Utils.hexStringToByteArray("12345678");
         setPasswordEasAfi(defaultPassword);
 
         //byte afi = (byte) 0x01;
@@ -3759,7 +3770,7 @@ C1h =
         writeToUiAppend(output, "iFlags4: " + Utils.byteToHex(iFlags4Byte));
         // result 0x60
 
-        // playing with flags
+        // playing with flags for Inventory Read
         Iso15693Flags iFlags5 = new Iso15693Flags(false, false, true, false);
         iFlags5.setInventory1Flags(false, false, false, false);
         byte iFlags5Byte = iFlags5.getFlagsByte();
@@ -3849,6 +3860,13 @@ C1h =
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setPasswordEasAfi(password);
         writeToUiAppend(output, "setPasswordEasAfi: " + success);
+        return success;
+    }
+
+    private boolean writePasswordEasAfi(byte[] password) {
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.writePasswordEasAfi(password);
+        writeToUiAppend(output, "writePasswordEasAfi: " + success);
         return success;
     }
 

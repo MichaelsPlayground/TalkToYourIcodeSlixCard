@@ -4,22 +4,33 @@ This is a sample app to demonstrate how to work with an ICODE SLIX (SL2S2002) ta
 
 ## Tag features
 
-• Password protected Electronic Article Surveillance (EAS)
-• Password protected Application Family Identifier (AFI)
-• Data Storage Format Identifier (DSFID)
+- Unique identifier for each device
+- Password protected Electronic Article Surveillance (EAS)
+- Password protected Application Family Identifier (AFI)
+- Data Storage Format Identifier (DSFID)
+- Lock mechanism for each user memory block (write protection)
+- Lock mechanism for DSFID, AFI, EAS
+- Password (32-bit) protected EAS and AFI functionality
 
+## What are the application areas of this tag
 
-## technical data of the tag
+- Libraries
+- Item level tagging in pharmaceutical supply chains
+- Counterfeit protection for consumer goods
+- Industrial applications
+- Asset and document tracking
 
-Memory Information: 112 bytes, 28 blocks, with 4 bytes per block
+## Technical data of the tag
+
+Memory Information: 112 bytes, organized in 28 blocks with 4 bytes per block
 
 Maximum NDEF storage size after format: 106 bytes
 
-Technologies Supported: ISO/IEC 15693-3 compatible, ISO/IEC 15693-2 compatible
+Technologies supported: ISO/IEC 15693-3 compatible, ISO/IEC 15693-2 compatible
 
 Android Technology Information:
 
-Tech [android.nfc.tech.NfcV, android.nfc.tech.NdefFormatable]
+Tech: android.nfc.tech.NfcV, android.nfc.tech.NdefFormatable
 
 Maximum transceive length: 253 bytes
 
