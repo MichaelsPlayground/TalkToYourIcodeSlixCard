@@ -24,7 +24,7 @@ Below you find all supported commands and examples:
 
 For an addressed Lock Block command, the Option and Address flags (0x90) must be set.
 
-**This is a permanent = unchangeable setting !**
+**This is a permanent = irrevocable setting !**
 
 ## Read multiple blocks (Command code = 23h)
 
@@ -34,15 +34,22 @@ For an addressed Lock Block command, the Option and Address flags (0x90) must be
 
 ## Write AFI (Command code = 27h)
 
+The AFI ("Application Family Identifier") is a one byte value defining a group of same articles. You can write 
+a new value by running this command. If the command is password protected you need to run a **set password** command 
+before running this command.
+
 ## Lock AFI (Command code = 28h)
 
-**This is a permanent = unchangeable setting !**
+**This is a permanent = irrevocable setting !**
 
 ## Write DSFID (Command code = 29h)
 
+The Data Storage Format Identifier (DSFID) is a one byte value defining the storage formatting of data on the tag. You can write
+a new value by running this command.
+
 ## Lock DSFID (Command code = 2Ah)
 
-**This is a permanent = unchangeable setting !**
+**This is a permanent = irrevocable setting !**
 
 ## Get System Information (Command code = 2Bh)
 
@@ -85,7 +92,7 @@ cannot be changed.
 
 The EAS/AFI password is addressed with the password identifier (0x10).
 
-**This is a permanent = unchangeable setting !**
+**This is a permanent = irrevocable setting !**
 
 ## Inventory Read (Command code = A0h)
 
@@ -120,23 +127,25 @@ The LOCK EAS command locks the current state of the EAS mode and the EAS ID. If 
 mode is password protected the EAS password has to be first transmitted with the SET 
 PASSWORD command.
 
-**This is a permanent = unchangeable setting !**
+**This is a permanent = irrevocable setting !**
 
 ## EAS Alarm (Command code = A5h)
 
 If the EAS mode is enabled, the EAS sequence is returned from the ICODE SLIX IC.
 If the EAS mode is disabled the ICODE SLIX IC remains silent.
 
+
+If the *Option Flag* is 0/false, EAS will be password protected, if the *Option Flag* is
 ## Password Protect EAS or AFI (Command code = A6h)
 
-The PASSWORD PROTECT EAS/AFI command enables the password protection for EAS and/or AFI 
+The PASSWORD PROTECT EAS/AFI command enables the password protection for EAS and/or AFI
 if the EAS/AFI password is first transmitted with the SET PASSWORD command.
-
-If the *Option Flag* is 0/false, EAS will be password protected, if the *Option Flag* is 
 1/true, AFI will be password protected.
 
+After an activation you can write to AFI or EAS after a successfully "set password" run.
+
 **Once the EAS/AFI password protection is enabled, it is not possible to change back to 
-unprotected EAS and/or AFI.**
+unprotected EAS and/or AFI writing.**
 
 ## 
 

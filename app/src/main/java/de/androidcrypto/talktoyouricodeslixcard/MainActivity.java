@@ -3708,9 +3708,11 @@ C1h =
         int startBlockNumber = 0;
         int numberOfBlocks = 28;
         byte[] multipleBlocksSecurityStatus = getMultipleBlocksSecurityStatus(startBlockNumber, numberOfBlocks);
+
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
+        passwordProtectAfi();
 */
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
@@ -3719,10 +3721,17 @@ C1h =
         writePasswordEasAfi(defaultPassword);
         //writePasswordEasAfi(easAfiPassword);
 */
-/*
-        byte afi = (byte) 0x03;
+
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        setPasswordEasAfi(defaultPassword);
+        byte afi = (byte) 0x06;
         writeAfi(afi);
-*/
+/*
+        byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
+        setPasswordEasAfi(defaultPassword);
+
+        passwordProtectAfi();
+ */
 
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
@@ -3752,6 +3761,7 @@ C1h =
         easAlarm();
 */
 
+        writeToUiAppend(output, outputDivider);
         // playing with flags
         Iso15693Flags iFlags1 = new Iso15693Flags(false, true, false, false);
         iFlags1.setInventory0Flags(false, false, false, false);
@@ -3780,6 +3790,13 @@ C1h =
         writeToUiAppend(output, "iFlags5: " + Utils.byteToHex(iFlags5Byte));
         // result 04
 
+        // playing with flags for Inventory Read with AFI
+        Iso15693Flags iFlags6 = new Iso15693Flags(false, false, true, false);
+        iFlags6.setInventory1Flags(true, false, false, false);
+        byte iFlags6Byte = iFlags6.getFlagsByte();
+        writeToUiAppend(output, "iFlags6: " + Utils.byteToHex(iFlags6Byte));
+        // result 14
+
         // playing with flags
         Iso15693Flags iFlags3 = new Iso15693Flags(false, true, true, false);
         iFlags3.setInventory1Flags(false, true, false, false);
@@ -3787,16 +3804,20 @@ C1h =
         writeToUiAppend(output, "iFlags3: " + Utils.byteToHex(iFlags3Byte));
         // result 0x26
 
-        byte afi = (byte) 0x01;
+        writeToUiAppend(output, outputDivider);
+        //byte afi = (byte) 0x03;
 
-        byte startBlock = (byte) 0x00;
-        byte numberOfBlocksByte = (byte) 0x1B; // 28
+        int startBlock = 0;
+        int numberOfBlocksByte = 28;
+        inventoryRead(startBlock, numberOfBlocksByte);
 
-        response = icodeSlixMethods.inventoryRead(startBlock, numberOfBlocksByte);
-
+        //response = icodeSlixMethods.inventoryRead(startBlock, numberOfBlocksByte);
+        //response = icodeSlixMethods.inventoryRead(afi, startBlock, numberOfBlocksByte);
         //response = icodeSlixMethods.inventoryRead(afi, (byte) 0x00, (byte) 0x00, startBlock, numberOfBlocksByte);
-        writeToUiAppend(output, printData("inventoryRead\n", response));
+        //writeToUiAppend(output, printData("inventoryRead\n", response));
 
+        //response = icodeSlixMethods.fastInventoryRead(startBlock, numberOfBlocksByte);
+        //writeToUiAppend(output, printData("fastInventoryRead\n", response));
 
 /*
         writeToUiAppend(output, outputDivider);
@@ -3876,6 +3897,20 @@ C1h =
         return success;
     }
 
+    private boolean passwordProtectAfi() {
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.passwordProtectAfi();
+        writeToUiAppend(output, "passwordProtectAfi: " + success);
+        return success;
+    }
+
+    private boolean passwordProtectEas() {
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.passwordProtectEas();
+        writeToUiAppend(output, "passwordProtectEas: " + success);
+        return success;
+    }
+
     private boolean setEas() {
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setEas();
@@ -3896,6 +3931,12 @@ C1h =
         writeToUiAppend(output, printData("easAlarm\n", response));
         return response;
         // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
+    }
+
+    private byte[] inventoryRead(int firstBlockNumber, int numberOfBlocks) {
+        byte[] response = icodeSlixMethods.inventoryRead(firstBlockNumber, numberOfBlocks);
+        writeToUiAppend(output, printData("inventoryRead\n", response));
+        return response;
     }
 
     private boolean formatTagNdef() {

@@ -77,6 +77,8 @@ responseGetSystemInfoFrame1bytesAddress length: 15 data: 000f700467db500104e0000
 NfcV Skikarte
 responseInventory length: 10 data: 0002c8504121662416e0
 responseGetSystemInfoFrame1bytesAddress length: 15 data: 000fc8504121662416e00200330302
+http://www.emmicroelectronic.com/sites/default/files/public/products/datasheets/em4133_ds.pdf
+https://web.archive.org/web/20160804144115/https://www.emmicroelectronic.com/sites/default/files/public/products/datasheets/em4133_ds.pdf
 
 ```
 

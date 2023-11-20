@@ -273,13 +273,13 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "passwordProtectEas IOException: " + e.getMessage();
+            Log.e(TAG, "passwordProtectEas IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
-        Log.d(TAG, "set eas alarm successfully");
+        Log.d(TAG, "passwordProtectEas successfully");
         errorCode = RESPONSE_OK.clone();
         errorCodeReason = RESPONSE_OK_STRING;
         return true;
@@ -288,10 +288,32 @@ sum = 32 + 64 = 96 = 60h
     public boolean passwordProtectAfi() {
         // Once the AFI password protection is enabled, it is not possible to
         // change back to unprotected AFI.
+        // Option flag set to logic 0: EAS will be password protected
         // Option flag set to logic 1: AFI will be password protected
 
-
-        return false;
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x60, // flags: addressed (= UID field present), use default Option 1 for AFI protection
+                /* COMMAND */ PASSWORD_PROTECT_EAS_AFI_COMMAND, //(byte)0xa6, // command password protection eas/afi
+                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufacturer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "passwordProtectAfi IOException: " + e.getMessage();
+            Log.e(TAG, "passwordProtectAfi IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "passwordProtectAfi successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
     }
 
     public boolean setEas() {
@@ -375,7 +397,7 @@ sum = 32 + 64 = 96 = 60h
         return trimFirstByte(response);
     }
 
-    public byte[] inventoryRead(byte firstBlockNumber, byte numberOfBlocks) {
+    public byte[] inventoryRead(int firstBlockNumber, int numberOfBlocks) {
         // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
 /*
 bit table
@@ -391,6 +413,9 @@ bit 8 0 subcarrier (0 = ask, 1 = fsk)
 sum = 32 + 64 = 96 = 60h
  */
         // sanity checks
+        if (!checkBlockNumber(firstBlockNumber)) return null;
+        if (!checkNumberOfBlocks(numberOfBlocks, firstBlockNumber)) return null;
+
         byte[] cmd = new byte[]{
                 /* FLAGS   */ (byte) 0x04,
                 /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
@@ -399,8 +424,55 @@ sum = 32 + 64 = 96 = 60h
                 //          /* AFI     */ afi,
                 /* MASK LEN*/ (byte) 0x00,
                 //          /* MASK VAL*/ maskValue,
-                /* 1st BLK */ firstBlockNumber,
-                /* BLK NBR */ numberOfBlocks
+                /* 1st BLK */ (byte) (firstBlockNumber & 0xff),
+                /* BLK NBR */ (byte) (numberOfBlocks & 0xff),
+        };
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "inventoryRead IOException: " + e.getMessage();
+            Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
+    public byte[] inventoryRead(byte afi, int firstBlockNumber, int numberOfBlocks) {
+        // if the wrong afi is presented an IOException occurs
+        // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
+/*
+bit table
+bit 1 0 RFU
+bit 2 0 Option flag default
+bit 3 0 Nr of slots 0 = all slots
+bit 4 0 AFI flag 0 = don't use afi
+bit 5 0 Protocol Extension (always 0)
+bit 6 1 Inventory flag (1 = see table 4) [32]
+bit 7 0 Uplink data read (0 = low, 1 = high) [64]
+bit 8 0 subcarrier (0 = ask, 1 = fsk)
+
+ */
+        // sanity checks
+        if (!checkBlockNumber(firstBlockNumber)) return null;
+        if (!checkNumberOfBlocks(numberOfBlocks, firstBlockNumber)) return null;
+        byte[] cmd = new byte[]{
+                /* FLAGS   */ (byte) 0x14, // inventory with AFI option
+                /* COMMAND */ INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
+                /* MANUF ID*/ MANUFACTURER_CODE,
+                //      /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* AFI     */ afi,
+                /* MASK LEN*/ (byte) 0x00,
+                //          /* MASK VAL*/ maskValue,
+                /* 1st BLK */ (byte) (firstBlockNumber & 0xff),
+                /* BLK NBR */ (byte) (numberOfBlocks & 0xff),
         };
         //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
@@ -455,6 +527,54 @@ sum = 32 + 64 = 96 = 60h
             errorCode = RESPONSE_FAILURE.clone();
             errorCodeReason = "inventoryRead IOException: " + e.getMessage();
             Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
+            return null;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return null; // errorCode and reason are setup
+        Log.d(TAG, "set eas alarm successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return trimFirstByte(response);
+    }
+
+    /* Note: this is NOT WORKING */
+    public byte[] fastInventoryRead(int firstBlockNumber, int numberOfBlocks) {
+        // for flags see TRF7960 Evaluation Module ISO 15693 Host Commands Sloa141.pdf pages 20 + 21
+/*
+bit table
+bit 1 0 RFU
+bit 2 0 Option flag default
+bit 3 0 Nr of slots 0 = all slots
+bit 4 0 AFI flag 0 = don't use afi
+bit 5 0 Protocol Extension (always 0)
+bit 6 1 Inventory flag (1 = see table 4) [32]
+bit 7 1 Uplink data read (0 = low, 1 = high) [64]
+bit 8 0 subcarrier (0 = ask, 1 = fsk)
+
+sum = 32 + 64 = 96 = 60h
+ */
+        // sanity checks
+        if (!checkBlockNumber(firstBlockNumber)) return null;
+        if (!checkNumberOfBlocks(numberOfBlocks, firstBlockNumber)) return null;
+        byte[] cmd = new byte[]{
+                /* FLAGS   */ (byte) 0x04,
+                /* COMMAND */ FAST_INVENTORY_READ_COMMAND, //(byte)0xa0, // command inventory read
+                /* MANUF ID*/ MANUFACTURER_CODE,
+                //      /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                //          /* AFI     */ afi,
+                /* MASK LEN*/ (byte) 0x00,
+                //          /* MASK VAL*/ maskValue,
+                /* 1st BLK */ (byte) (firstBlockNumber & 0xff),
+                /* BLK NBR */ (byte) (numberOfBlocks & 0xff),
+        };
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "fastInventoryRead IOException: " + e.getMessage();
+            Log.e(TAG, "fastInventoryRead IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
