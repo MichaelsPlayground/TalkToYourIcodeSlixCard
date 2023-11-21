@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class IcodeSlixMethods {
 
@@ -719,6 +720,24 @@ sum = 32 + 64 = 96 = 60h
         return true;
     }
 
+    /**
+     * This is not a command natively supported by the ICODE SLIX tag. It divides the data into parts of
+     * 4 bytes each and writes them to the tag, beginning at blockNumber
+     * @param blockNumber
+     * @param data
+     * @return true if all data was written with success
+     */
+    public boolean writeMultipleBlocks(int blockNumber, byte[] data) {
+        if (!checkBlockNumber(blockNumber)) return false;
+        if(!checkData(data)) return false;
+
+        // todo check complete length of data fitting in remaining user memory
+
+        List<byte[]> dataList = Utils.divideArrayToList(data,4);
+
+        return false;
+    }
+
     public boolean writeAfi(byte afi) {
         // sanity check
 
@@ -1016,6 +1035,20 @@ sum = 32 + 64 = 96 = 60h
         if (data4Byte.length != 4) {
             errorCode = RESPONSE_PARAMETER_ERROR.clone();
             errorCodeReason = "data4Byte is not of length 4, found " + data4Byte.length + ", aborted)";
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkData(byte[] data) {
+        if (data == null) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "data is NULL, aborted";
+            return false;
+        }
+        if (data.length == 0) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "data is of length 0, aborted)";
             return false;
         }
         return true;
