@@ -136,6 +136,8 @@ The LOCK EAS command locks the current state of the EAS mode and the EAS ID. If 
 mode is password protected the EAS password has to be first transmitted with the SET 
 PASSWORD command.
 
+After running this command the status of EAS it permanently locked.
+
 **This is a permanent = irrevocable setting !**
 
 ## EAS Alarm (Command code = A5h)

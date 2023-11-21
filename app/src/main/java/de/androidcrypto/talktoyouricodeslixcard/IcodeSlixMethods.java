@@ -341,11 +341,11 @@ sum = 32 + 64 = 96 = 60h
     }
 
     public boolean resetEas() {
-        // sanity checks
+        // no sanity checks
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ RESET_EAS_COMMAND, //(byte)0xa3, // command reset eas
-                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* MANUF ID*/ MANUFACTURER_CODE, // manufactorer code is 0x04h for NXP
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
@@ -392,6 +392,33 @@ sum = 32 + 64 = 96 = 60h
         errorCode = RESPONSE_OK.clone();
         errorCodeReason = RESPONSE_OK_STRING;
         return trimFirstByte(response);
+    }
+
+    public boolean lockEas() {
+        // no sanity checks
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ LOCK_EAS_COMMAND, //(byte)0xa4, // command lock eas
+                /* MANUF ID*/ MANUFACTURER_CODE, // manufactorer code is 0x04h for NXP
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
+        //Log.d(TAG, printData("cmd", cmd));
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "lockEas IOException: " + e.getMessage();
+            Log.e(TAG, "lockEas IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "eas locked successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
     }
 
     public byte[] inventoryRead(int firstBlockNumber, int numberOfBlocks) {
@@ -594,11 +621,11 @@ sum = 32 + 64 = 96 = 60h
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ GET_MULTIPLE_BLOCK_SECURITY_STATUS_COMMAND, //(byte)0x2c, // command get Multiple Block Security Status
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
-                /* OFFSET  */ (byte)(blockNumber & 0x0ff),
-                /* NUMBER  */ (byte)((numberOfBlocks - 1) & 0x0ff)
+                /* OFFSET  */ (byte)(blockNumber & 0xff),
+                /* NUMBER  */ (byte)((numberOfBlocks - 1) & 0xff)
         };
         System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
-        cmd[10] = (byte)((blockNumber) & 0x0ff); // copy block number
+        cmd[10] = (byte)((blockNumber) & 0xff); // copy block number
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -629,7 +656,7 @@ sum = 32 + 64 = 96 = 60h
                 /* OFFSET  */ (byte)0x00
         };
         System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
-        cmd[10] = (byte)((blockNumber) & 0x0ff); // copy block number
+        cmd[10] = (byte)((blockNumber) & 0xff); // copy block number
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -663,7 +690,7 @@ sum = 32 + 64 = 96 = 60h
                 /* NUMBER  */ (byte)((numberOfBlocks - 1) & 0xff)
         };
         System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
-        cmd[10] = (byte)((blockNumber) & 0x0ff); // copy block number
+        cmd[10] = (byte)((blockNumber) & 0xff); // copy block number
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
