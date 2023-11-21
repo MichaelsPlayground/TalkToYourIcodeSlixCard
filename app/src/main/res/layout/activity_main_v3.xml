@@ -40,110 +40,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Please use the menu to choose an operation after tapping a tag"
+                android:text="Please use the menu to choose an operation"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/llBlockOperations"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="0dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etBlockNumberLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:hint="block number (0..27)"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etBlockNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="true"
-                        android:text="0"
-
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etNumberOfBlocksLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:hint="numb.of blocks (1..28)"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNumberOfBlocks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="true"
-                        android:text="1"
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llBlockButtonOperations"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <Button
-                android:id="@+id/btnReadSingleBlock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginRight="2dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/application_color_light_background_orange"
-                android:text="read single blk" />
-
-            <Button
-                android:id="@+id/btnReadMultipleBlocks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="read multiple blks" />
-
-        </LinearLayout>
-
-
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etOutputLayout"
@@ -168,8 +68,8 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:focusable="false"
-                    android:text="choose an operation ..."
                     android:typeface="monospace"
+                    android:text="choose an operation ..."
                     tools:ignore="KeyboardInaccessibleWidget" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -302,9 +202,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:focusable="false"
                         android:maxLines="1"
                         android:text=""
+                        android:focusable="false"
                         tools:ignore="KeyboardInaccessibleWidget" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -347,8 +247,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="select" />
 
                     <Button
@@ -466,8 +366,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="file settings" />
 
                     <Button
@@ -475,8 +375,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:enabled="true"
                         android:text="chg file sett" />
 
@@ -588,8 +488,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="A0 auth" />
 
                     <Button
@@ -597,8 +497,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="A1 auth" />
 
                     <Button
@@ -606,8 +506,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="A2 auth" />
 
                     <Button
@@ -615,8 +515,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="A3 auth" />
 
                     <Button
@@ -624,8 +524,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="A4 auth" />
 
                 </LinearLayout>
@@ -650,8 +550,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="0 auth" />
 
                     <Button
@@ -659,8 +559,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="1 auth" />
 
                     <Button
@@ -668,8 +568,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="2 auth" />
 
                     <Button
@@ -677,8 +577,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="3 auth" />
 
                     <Button
@@ -686,8 +586,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="4 auth" />
 
                 </LinearLayout>
@@ -712,8 +612,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/light_background_red"
+                        android:layout_weight="1"
                         android:text="0" />
 
                     <Button
@@ -721,8 +621,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="1" />
 
                     <Button
@@ -730,8 +630,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="2" />
 
                     <Button
@@ -739,8 +639,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="3" />
 
                     <Button
@@ -748,8 +648,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="4" />
 
                 </LinearLayout>
@@ -1032,8 +932,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="read 3" />
 
                     <Button
@@ -1041,8 +941,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="write 3" />
 
                     <Button
@@ -1050,8 +950,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="x" />
 
                 </LinearLayout>
@@ -1066,8 +966,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="read 2" />
 
                     <Button
@@ -1075,8 +975,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="write 2" />
 
                     <Button
@@ -1845,8 +1745,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
                         android:backgroundTint="@color/application_color_light_background_orange"
+                        android:layout_weight="1"
                         android:text="get key version" />
 
                     <Button
