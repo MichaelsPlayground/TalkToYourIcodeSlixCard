@@ -85,6 +85,7 @@ public class IcodeSlixMethods {
     private static final byte[] RESPONSE_FAILURE = new byte[]{(byte) 0x91, (byte) 0xFF}; // general, undefined failure
     private static final String RESPONSE_FAILURE_STRING = "FAILURE";
     // constants
+    // todo get data from SystemInformation
     private int MAXIMUM_BLOCK_NUMBER = 27; // fixed for ICODE SLIX S with 28 blocks * 4 bytes = 108 bytes user memory
     // from system information
     private int NUMBER_OF_BLOCKS;
@@ -730,12 +731,37 @@ sum = 32 + 64 = 96 = 60h
     public boolean writeMultipleBlocks(int blockNumber, byte[] data) {
         if (!checkBlockNumber(blockNumber)) return false;
         if(!checkData(data)) return false;
-
-        // todo check complete length of data fitting in remaining user memory
-
-        List<byte[]> dataList = Utils.divideArrayToList(data,4);
-
-        return false;
+        int dataLen = data.length;
+        // if dataLen is not a multiple of BYTES_PER_BLOCK create a larger array
+        byte[] newData;
+        int newDataLen;
+        if (dataLen % BYTES_PER_BLOCK != 0) {
+            // dataLen is not a multiple of BYTES_PER_BLOCK
+            newDataLen = dataLen + (BYTES_PER_BLOCK - (dataLen % BYTES_PER_BLOCK));
+            newData  = new byte[newDataLen];
+            System.arraycopy(data, 0, newData, 0, dataLen);
+        } else {
+            newData = data.clone();
+            newDataLen = dataLen;
+        }
+        if (newDataLen > MEMORY_SIZE) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "data length is > " + MEMORY_SIZE + ", found length " + newDataLen + " , aborted)";
+            return false;
+        }
+        // if we don't start at the first blockNumber we don't have the full memory size to store
+        if (newDataLen > (MEMORY_SIZE - (blockNumber * BYTES_PER_BLOCK))) {
+            errorCode = RESPONSE_PARAMETER_ERROR.clone();
+            errorCodeReason = "data length is too large for memory, aborted)";
+            return false;
+        }
+        List<byte[]> dataList = Utils.divideArrayToList(newData,BYTES_PER_BLOCK);
+        boolean resultMultipleWrite = true;
+        for (int i = 0; i < dataList.size(); i++){
+            boolean resultSingleWrite = writeSingleBlock(blockNumber + i, dataList.get(i));
+            if (resultSingleWrite == false) resultMultipleWrite = false; // if one write fails the method reports false
+        }
+        return resultMultipleWrite;
     }
 
     public boolean writeAfi(byte afi) {
@@ -753,8 +779,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "writeAfi IOException: " + e.getMessage();
+            Log.e(TAG, "writeAfi IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
@@ -765,9 +791,32 @@ sum = 32 + 64 = 96 = 60h
         return true;
     }
 
-    public boolean writeDsfId(byte dsfId) {
-        // sanity check
+    public boolean lockAfi() {
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ LOCK_AFI_COMMAND, //(byte)0x28, // command lock afi
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "lockAfi IOException: " + e.getMessage();
+            Log.e(TAG, "lockAfi IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "afi locked successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
 
+    public boolean writeDsfId(byte dsfId) {
+        // no sanity check
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ WRITE_DSFID_COMMAND, //(byte)0x29, // command write dsfId
@@ -780,13 +829,37 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "writeDsfId IOException: " + e.getMessage();
+            Log.e(TAG, "writeDsfId IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "dsfId written successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
+    }
+
+    public boolean lockDsfId() {
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ LOCK_DSFID_COMMAND, //(byte)0x2A, // command lock dsfId
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+        };
+        System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "lockDsfId IOException: " + e.getMessage();
+            Log.e(TAG, "lockDsfId IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "dsfId locked successfully");
         errorCode = RESPONSE_OK.clone();
         errorCodeReason = RESPONSE_OK_STRING;
         return true;

@@ -225,12 +225,12 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         byte afi = (byte) 0x00;
         //byte afi = (byte) 0xAE;
         writeAfi(afi);
-
+*/
         //dsfId = (byte) 0x02;
         byte dsfId = (byte) 0x00;
         //byte dsfId = (byte) 0xD1;
         writeDfsId(dsfId);
-
+/*
         int blockNumber = 0;
         byte[] dataBlock00 = readSingleBlock(blockNumber);
 
@@ -313,6 +313,19 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
  */
 
+        byte[] testData1 = Utils.generateTestData(8);
+        writeMultipleBlocks(0, testData1);
+
+        byte[] testData2 = Utils.generateTestData(9);
+        writeMultipleBlocks(5, testData2);
+
+        byte[] testData3 = Utils.generateTestData(112);
+        writeMultipleBlocks(0, testData3);
+/*
+        success = icodeSlixMethods.lockDsfId();
+        writeToUiAppend(output, "lockDsfId: " + success);
+*/
+        readMultipleBlocks(0, 28);
 
         //writeSingleBlock(data);
 
@@ -362,6 +375,13 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeSingleBlock(blockNumber, data);
         writeToUiAppend(output, "writeBlock 00: " + success);
+        return success;
+    }
+
+    private boolean writeMultipleBlocks(int blockNumber, byte[] data) {
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.writeMultipleBlocks(0, data);
+        writeToUiAppend(output, "writeMultipleData success: " + success);
         return success;
     }
 

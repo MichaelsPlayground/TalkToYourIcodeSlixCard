@@ -20,6 +20,11 @@ Below you find all supported commands and examples:
 
 ## Write single block (Command code = 21h)
 
+## Write multiple blocks (not natively supported by tag)
+
+This is method that divides the data in blocks of tag's block size (4 bytes) and writes the divided data to 
+subsequent blocks using the "Write single block" command.
+
 ## Lock block (Command code = 22h)
 
 For an addressed Lock Block command, the Option and Address flags (0x90) must be set.
@@ -40,14 +45,18 @@ before running this command.
 
 ## Lock AFI (Command code = 28h)
 
+After running this command the value of AFI it permanently locked.
+
 **This is a permanent = irrevocable setting !**
 
 ## Write DSFID (Command code = 29h)
 
-The Data Storage Format Identifier (DSFID) is a one byte value defining the storage formatting of data on the tag. You can write
-a new value by running this command.
+The 8-bit Data Structure Format Identifier (DSFID) field is a location to write information to about the structure 
+of the User memory. You can write a new value by running this command.
 
 ## Lock DSFID (Command code = 2Ah)
+
+After running this command the value of DSFID it permanently locked.
 
 **This is a permanent = irrevocable setting !**
 
@@ -97,7 +106,7 @@ The EAS/AFI password is addressed with the password identifier (0x10).
 ## Inventory Read (Command code = A0h)
 
 When receiving the INVENTORY READ request, the ICODE SLIX IC performs the same as the 
-anticollision sequence, with the difference that instead of the UID and the DSFID, 
+anti collision sequence, with the difference that instead of the UID and the DSFID, 
 the requested memory content is re-transmitted from the ICODE SLIX IC.
 
 ## Fast Inventory Read (Command code = A1h)
