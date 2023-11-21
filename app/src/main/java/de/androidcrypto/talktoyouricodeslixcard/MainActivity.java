@@ -55,9 +55,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
-
     private static final String TAG = MainActivity.class.getName();
 
+    /**
+     * section for block operations
+     */
+
+    Button btnReadSingleBlock, btnReadMultipleBlocks,
+            btnWriteSingleBlock, btnWriteMultipleBlocks,
+            btnLockBlock, btnGetMultipleBlockSecurityStatus;
+    private com.google.android.material.textfield.TextInputEditText etBlockNumber, etNumberOfBlocks, etDataToWrite;
+
+
+
+    /**
+     * section general
+     */
     private com.google.android.material.textfield.TextInputEditText output, errorCode;
     private com.google.android.material.textfield.TextInputLayout errorCodeLayout;
 
@@ -90,6 +103,17 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(myToolbar);
 
+        // block operations section
+        btnReadSingleBlock = findViewById(R.id.btnReadSingleBlock);
+        btnReadMultipleBlocks = findViewById(R.id.btnReadMultipleBlocks);
+        btnWriteSingleBlock = findViewById(R.id.btnWriteSingleBlock);
+        btnWriteMultipleBlocks = findViewById(R.id.btnWriteMultipleBlocks);
+        btnLockBlock = findViewById(R.id.btnLockBlock);
+        btnGetMultipleBlockSecurityStatus = findViewById(R.id.btnGetMultipleBlockSecurityStatus);
+        etBlockNumber = findViewById(R.id.etBlockNumber);
+        etNumberOfBlocks = findViewById(R.id.etNumberOfBlocks);
+
+        // general section
         output = findViewById(R.id.etOutput);
         errorCode = findViewById(R.id.etErrorCode);
         errorCodeLayout = findViewById(R.id.etErrorCodeLayout);
@@ -100,6 +124,21 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        btnReadSingleBlock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readSingleBlock(Integer.parseInt(etBlockNumber.getText().toString()));
+            }
+        });
+
+        btnReadMultipleBlocks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readMultipleBlocks(Integer.parseInt(etBlockNumber.getText().toString()), Integer.parseInt(etNumberOfBlocks.getText().toString()));
+            }
+        });
+
 
 /*
         formatPicc.setOnClickListener(new View.OnClickListener() {
@@ -353,16 +392,28 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     }
 
     private byte[] readSingleBlock(int blockNumber) {
+        if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.readSingleBlock(0);
+        byte[] response = icodeSlixMethods.readSingleBlock(blockNumber);
         writeToUiAppend(output, printData("readSingleBlock 00", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return response;
     }
 
     private byte[] readMultipleBlocks(int blockNumber, int numberOfBlocks) {
+        if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.readMultipleBlocks(0, 28);
+        byte[] response = icodeSlixMethods.readMultipleBlocks(blockNumber, numberOfBlocks);
         writeToUiAppend(output, printData("readMultipleBlocks from " + blockNumber + " read " + numberOfBlocks + " blocks", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return response;
     }
 
@@ -469,6 +520,18 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         boolean success = icodeSlixMethods.formatTagNdef();
         writeToUiAppend(output, "formatTagNde: " + success);
         return success;
+    }
+
+    private boolean checkValidTag() {
+        if ((icodeSlixMethods == null) || (!icodeSlixMethods.isInitialized())) {
+            output.setText("Tag is not available, aborted");
+            errorCode.setText("");
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, "Error - tag is not initialied", COLOR_RED);
+            return false;
+        }
+        output.setText("");
+        errorCode.setText("");
+        return true;
     }
 
 

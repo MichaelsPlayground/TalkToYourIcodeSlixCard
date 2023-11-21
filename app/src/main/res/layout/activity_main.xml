@@ -45,6 +45,23 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
+
+            <TextView
+                android:id="@+id/tvInformationBlockOperations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Block operations (read / write / lock)"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:id="@+id/llBlockOperations"
                 android:layout_width="match_parent"
@@ -60,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="2dp"
                     android:layout_weight="1"
                     android:hint="block number (0..27)"
@@ -78,6 +95,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:focusable="true"
+                        android:inputType="number"
                         android:text="0"
                         tools:ignore="KeyboardInaccessibleWidget" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -88,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:hint="numb.of blocks (1..28)"
@@ -106,40 +124,41 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:focusable="true"
+                        android:inputType="number"
                         android:text="1"
                         tools:ignore="KeyboardInaccessibleWidget" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/llBlockButtonOperations"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:orientation="horizontal"
-            android:visibility="visible">
+            <LinearLayout
+                android:id="@+id/llBlockReadButtonOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
-            <Button
-                android:id="@+id/btnReadSingleBlock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="4dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/application_color_light_background_orange"
-                android:text="read single blk" />
+                <Button
+                    android:id="@+id/btnReadSingleBlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/application_color_light_background_orange"
+                    android:text="read single blk" />
 
-            <Button
-                android:id="@+id/btnReadMultipleBlocks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:text="read multiple blks" />
+                <Button
+                    android:id="@+id/btnReadMultipleBlocks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1"
+                    android:text="read multiple blks" />
 
-        </LinearLayout>
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etDataToWriteLayout"
@@ -150,11 +169,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:hint="data to write"
-                app:endIconMode="clear_text"
                 app:boxCornerRadiusBottomEnd="5dp"
                 app:boxCornerRadiusBottomStart="5dp"
                 app:boxCornerRadiusTopEnd="5dp"
                 app:boxCornerRadiusTopStart="5dp"
+                app:endIconMode="clear_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -169,6 +188,70 @@
                     tools:ignore="KeyboardInaccessibleWidget" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:id="@+id/llBlockWriteButtonOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/btnWriteSingleBlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/application_color_light_background_orange"
+                    android:text="write single blk" />
+
+                <Button
+                    android:id="@+id/btnWriteMultipleBlocks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1"
+                    android:text="write multiple blks" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBlockLockButtonOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/btnLockBlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/application_color_light_background_orange"
+                    android:text="lock block" />
+
+                <Button
+                    android:id="@+id/btnGetMultipleBlockSecurityStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_weight="1"
+                    android:text="block security status" />
+
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etOutputLayout"

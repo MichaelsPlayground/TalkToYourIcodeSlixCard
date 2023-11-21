@@ -18,6 +18,8 @@ Below you find all supported commands and examples:
 
 ## Read single block (Command code = 20h)
 
+## Read multiple blocks (Command code = 23h)
+
 ## Write single block (Command code = 21h)
 
 ## Write multiple blocks (not natively supported by tag)
@@ -30,8 +32,6 @@ subsequent blocks using the "Write single block" command.
 For an addressed Lock Block command, the Option and Address flags (0x90) must be set.
 
 **This is a permanent = irrevocable setting !**
-
-## Read multiple blocks (Command code = 23h)
 
 ## Select (Command code = 25h)
 
@@ -158,7 +158,7 @@ After an activation you can write to AFI or EAS after a successfully "set passwo
 **Once the EAS/AFI password protection is enabled, it is not possible to change back to 
 unprotected EAS and/or AFI writing.**
 
-## 
+# End of document
 
 
 
