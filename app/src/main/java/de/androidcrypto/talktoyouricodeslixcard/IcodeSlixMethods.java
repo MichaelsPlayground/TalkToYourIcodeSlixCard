@@ -34,7 +34,6 @@ public class IcodeSlixMethods {
     private byte[] responseInventory;
     private SystemInformation systemInformation;
     private Inventory inventory;
-    private byte[] responseGetSystemInfoFrame1bytesAddress;
 
     // mandatory commands as defined in ISO/IEC 15693-3
     // https://developer.apple.com/documentation/corenfc/nfciso15693tag
@@ -70,7 +69,6 @@ public class IcodeSlixMethods {
     private static final byte PASSWORD_IDENTIFIER_EAS_AFI = (byte) 0x10;
     // Response codes
     private boolean isTagIcodeSlix = false;
-    private boolean isApplicationSelected = false;
     private boolean printToLog = true; // print data to log
     private String logData;
     private byte[] errorCode = new byte[2];
@@ -78,9 +76,6 @@ public class IcodeSlixMethods {
     private static final byte OPERATION_OK = (byte) 0x00;
     private static final byte[] RESPONSE_OK = new byte[]{(byte) 0x00};
     private static final String RESPONSE_OK_STRING = "SUCCESS";
-    private static final byte[] RESPONSE_ISO_OK = new byte[]{(byte) 0x90, (byte) 0x00};
-    private static final byte[] RESPONSE_MORE_DATA_AVAILABLE = new byte[]{(byte) 0x91, (byte) 0xAF};
-    private static final byte[] RESPONSE_LENGTH_ERROR = new byte[]{(byte) 0x91, (byte) 0x7E};
     private static final byte[] RESPONSE_PARAMETER_ERROR = new byte[]{(byte) 0x91, (byte) 0xFE}; // failure because of wrong parameter
     private static final byte[] RESPONSE_FAILURE = new byte[]{(byte) 0x91, (byte) 0xFF}; // general, undefined failure
     private static final String RESPONSE_FAILURE_STRING = "FAILURE";
@@ -147,8 +142,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "getInventory IOException: " + e.getMessage();
+            Log.e(TAG, "getInventory IOException: " + e.getMessage());
             return null;
         }
         //writeToUiAppend(textView, printData("readMultipleBlocks", response));
@@ -333,8 +328,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "setEas IOException: " + e.getMessage();
+            Log.e(TAG, "setEas IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
@@ -360,8 +355,8 @@ sum = 32 + 64 = 96 = 60h
             response = nfcV.transceive(cmd);
         } catch (IOException e) {
             errorCode = RESPONSE_FAILURE.clone();
-            errorCodeReason = "IOException: " + e.getMessage();
-            Log.e(TAG, "IOException: " + e.getMessage());
+            errorCodeReason = "resetEas IOException: " + e.getMessage();
+            Log.e(TAG, "resetEas IOException: " + e.getMessage());
             return false;
         }
         //writeToUiAppend(textView, printData("readSingleBlock", response));
@@ -664,8 +659,8 @@ sum = 32 + 64 = 96 = 60h
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ READ_MULTIPLE_BLOCKS_COMMAND, //(byte)0x23, // command read multiple blocks
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
-                /* OFFSET  */ (byte)(blockNumber & 0x0ff),
-                /* NUMBER  */ (byte)((numberOfBlocks - 1) & 0x0ff)
+                /* OFFSET  */ (byte)(blockNumber & 0xff),
+                /* NUMBER  */ (byte)((numberOfBlocks - 1) & 0xff)
         };
         System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
         cmd[10] = (byte)((blockNumber) & 0x0ff); // copy block number
@@ -703,7 +698,7 @@ sum = 32 + 64 = 96 = 60h
                 /* DATA    */ data4Byte[0], data4Byte[1], data4Byte[2], data4Byte[3]
         };
         System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
-        cmd[10] = (byte)((blockNumber) & 0x0ff); // copy block number
+        cmd[10] = (byte)((blockNumber) & 0xff); // copy block number
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -762,6 +757,33 @@ sum = 32 + 64 = 96 = 60h
             if (resultSingleWrite == false) resultMultipleWrite = false; // if one write fails the method reports false
         }
         return resultMultipleWrite;
+    }
+
+    private boolean lockBlock(int blockNumber) {
+        // sanity check
+        if (!checkBlockNumber(blockNumber)) return false;
+        byte[] cmd = new byte[] {
+                /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
+                /* COMMAND */ LOCK_BLOCK_COMMAND, //(byte)0x28, // command lock afi
+                /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
+                /* BLK NBR */ (byte) (blockNumber & 0xff)
+        };
+        System.arraycopy(tagUid, 0, cmd, 2, 8); // copy tagId to UID
+        byte[] response;
+        try {
+            response = nfcV.transceive(cmd);
+        } catch (IOException e) {
+            errorCode = RESPONSE_FAILURE.clone();
+            errorCodeReason = "lockBlock IOException: " + e.getMessage();
+            Log.e(TAG, "lockBlock IOException: " + e.getMessage());
+            return false;
+        }
+        //writeToUiAppend(textView, printData("readSingleBlock", response));
+        if (!checkResponse(response)) return false; // errorCode and reason are setup
+        Log.d(TAG, "block locked successfully");
+        errorCode = RESPONSE_OK.clone();
+        errorCodeReason = RESPONSE_OK_STRING;
+        return true;
     }
 
     public boolean writeAfi(byte afi) {

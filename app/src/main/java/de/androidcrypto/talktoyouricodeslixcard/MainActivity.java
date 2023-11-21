@@ -325,6 +325,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         success = icodeSlixMethods.lockDsfId();
         writeToUiAppend(output, "lockDsfId: " + success);
 */
+        /*
+        lockDfsId();
+        lockAfi();
+         */
+
         readMultipleBlocks(0, 28);
 
         //writeSingleBlock(data);
@@ -364,10 +369,24 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         return success;
     }
 
+    private boolean lockAfi() {
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.lockAfi();
+        writeToUiAppend(output, "lockAfi: " + success);
+        return success;
+    }
+
     private boolean writeDfsId(byte dfsId) {
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);
+        return success;
+    }
+
+    private boolean lockDfsId() {
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.lockDsfId();
+        writeToUiAppend(output, "lockDsfId: " + success);
         return success;
     }
 
