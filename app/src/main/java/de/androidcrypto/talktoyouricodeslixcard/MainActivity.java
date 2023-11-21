@@ -139,6 +139,19 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             }
         });
 
+        btnWriteSingleBlock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                writeSingleBlock(Integer.parseInt(etBlockNumber.getText().toString()), etDataToWrite.getText().toString().getBytes(StandardCharsets.UTF_8));
+            }
+        });
+
+        btnWriteMultipleBlocks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                writeMultipleBlocks(Integer.parseInt(etBlockNumber.getText().toString()), etDataToWrite.getText().toString().getBytes(StandardCharsets.UTF_8));
+            }
+        });
 
 /*
         formatPicc.setOnClickListener(new View.OnClickListener() {
@@ -381,15 +394,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
     }
 
-
-    private byte[] getMultipleBlocksSecurityStatus(int blockNumber, int numberOfBlocks) {
-        System.out.println("blockNumber: " + blockNumber + " numberOfBlocks: " + numberOfBlocks);
-        System.out.println("icodeSlixMethods: " + icodeSlixMethods.toString());
-        writeToUiAppend(output, outputDivider);
-        byte[] response = icodeSlixMethods.getMultipleBlockSecurityStatus(blockNumber, numberOfBlocks);
-        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus 00-27\n", response));
-        return response;
-    }
+    /**
+     * section for block operations (read, write and lock blocks)
+     */
 
     private byte[] readSingleBlock(int blockNumber) {
         if (!checkValidTag()) return null;
@@ -417,21 +424,45 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         return response;
     }
 
-    private boolean writeAfi(byte afi) {
+    private boolean writeSingleBlock(int blockNumber, byte[] data) {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeAfi(afi);
-        writeToUiAppend(output, "writeAfi: " + success);
+        boolean success = icodeSlixMethods.writeSingleBlock(blockNumber, data);
+        writeToUiAppend(output, "writeBlock: " + success);
         return success;
     }
 
-    private boolean lockAfi() {
+    private boolean writeMultipleBlocks(int blockNumber, byte[] data) {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.lockAfi();
-        writeToUiAppend(output, "lockAfi: " + success);
+        boolean success = icodeSlixMethods.writeMultipleBlocks(blockNumber, data);
+        writeToUiAppend(output, "writeMultipleData success: " + success);
         return success;
     }
+
+    private boolean lockBlock(int blockNumber) {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.lockBlock(blockNumber);
+        writeToUiAppend(output, "lockBlock: " + success);
+        return success;
+    }
+
+    private byte[] getMultipleBlocksSecurityStatus(int blockNumber, int numberOfBlocks) {
+        if (!checkValidTag()) return null;
+        writeToUiAppend(output, outputDivider);
+        byte[] response = icodeSlixMethods.getMultipleBlockSecurityStatus(blockNumber, numberOfBlocks);
+        writeToUiAppend(output, "Block security status beginning with blockNumber " + blockNumber + " for " + numberOfBlocks + " blocks");
+                writeToUiAppend(output, printData("getMultipleBlockSecurityStatus\n", response));
+        return response;
+    }
+
+    /**
+     * section for dsfid
+     */
 
     private boolean writeDfsId(byte dfsId) {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);
@@ -439,55 +470,39 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     }
 
     private boolean lockDfsId() {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.lockDsfId();
         writeToUiAppend(output, "lockDsfId: " + success);
         return success;
     }
 
-    private boolean writeSingleBlock(int blockNumber, byte[] data) {
+    /**
+     * section for afi
+     */
+
+    private boolean writeAfi(byte afi) {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeSingleBlock(blockNumber, data);
-        writeToUiAppend(output, "writeBlock 00: " + success);
+        boolean success = icodeSlixMethods.writeAfi(afi);
+        writeToUiAppend(output, "writeAfi: " + success);
         return success;
     }
 
-    private boolean writeMultipleBlocks(int blockNumber, byte[] data) {
+    private boolean lockAfi() {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeMultipleBlocks(0, data);
-        writeToUiAppend(output, "writeMultipleData success: " + success);
+        boolean success = icodeSlixMethods.lockAfi();
+        writeToUiAppend(output, "lockAfi: " + success);
         return success;
     }
 
-    private boolean setPasswordEasAfi(byte[] password) {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.setPasswordEasAfi(password);
-        writeToUiAppend(output, "setPasswordEasAfi: " + success);
-        return success;
-    }
-
-    private boolean writePasswordEasAfi(byte[] password) {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writePasswordEasAfi(password);
-        writeToUiAppend(output, "writePasswordEasAfi: " + success);
-        return success;
-    }
-
-    private boolean passwordProtectAfi() {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.passwordProtectAfi();
-        writeToUiAppend(output, "passwordProtectAfi: " + success);
-        return success;
-    }
-
-    private boolean passwordProtectEas() {
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.passwordProtectEas();
-        writeToUiAppend(output, "passwordProtectEas: " + success);
-        return success;
-    }
+    /**
+     * section for eas
+     */
 
     private boolean setEas() {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setEas();
         writeToUiAppend(output, "setEas: " + success);
@@ -495,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     }
 
     private boolean resetEas() {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.resetEas();
         writeToUiAppend(output, "resetEas: " + success);
@@ -502,6 +518,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     }
 
     private byte[] easAlarm() {
+        if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
         byte[] response = icodeSlixMethods.easAlarm();
         writeToUiAppend(output, printData("easAlarm\n", response));
@@ -509,13 +526,55 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
     }
 
+    /**
+     * section for password protection
+     */
+
+    private boolean setPasswordEasAfi(byte[] password) {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.setPasswordEasAfi(password);
+        writeToUiAppend(output, "setPasswordEasAfi: " + success);
+        return success;
+    }
+
+    private boolean writePasswordEasAfi(byte[] password) {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.writePasswordEasAfi(password);
+        writeToUiAppend(output, "writePasswordEasAfi: " + success);
+        return success;
+    }
+
+    private boolean passwordProtectAfi() {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.passwordProtectAfi();
+        writeToUiAppend(output, "passwordProtectAfi: " + success);
+        return success;
+    }
+
+    private boolean passwordProtectEas() {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.passwordProtectEas();
+        writeToUiAppend(output, "passwordProtectEas: " + success);
+        return success;
+    }
+
+    /**
+     * section for general
+     */
+
     private byte[] inventoryRead(int firstBlockNumber, int numberOfBlocks) {
+        if (!checkValidTag()) return null;
         byte[] response = icodeSlixMethods.inventoryRead(firstBlockNumber, numberOfBlocks);
         writeToUiAppend(output, printData("inventoryRead\n", response));
         return response;
     }
 
     private boolean formatTagNdef() {
+        if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.formatTagNdef();
         writeToUiAppend(output, "formatTagNde: " + success);

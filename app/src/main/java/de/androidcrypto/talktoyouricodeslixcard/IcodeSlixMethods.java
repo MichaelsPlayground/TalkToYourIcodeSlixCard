@@ -787,7 +787,7 @@ sum = 32 + 64 = 96 = 60h
         return resultMultipleWrite;
     }
 
-    private boolean lockBlock(int blockNumber) {
+    public boolean lockBlock(int blockNumber) {
         // sanity check
         if (!checkBlockNumber(blockNumber)) return false;
         byte[] cmd = new byte[] {
