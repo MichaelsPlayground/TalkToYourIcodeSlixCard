@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         btnGetMultipleBlockSecurityStatus = findViewById(R.id.btnGetMultipleBlockSecurityStatus);
         etBlockNumber = findViewById(R.id.etBlockNumber);
         etNumberOfBlocks = findViewById(R.id.etNumberOfBlocks);
+        etDataToWrite = findViewById(R.id.etDataToWrite);
 
         // general section
         output = findViewById(R.id.etOutput);
@@ -429,6 +430,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeSingleBlock(blockNumber, data);
         writeToUiAppend(output, "writeBlock: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -437,6 +443,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeMultipleBlocks(blockNumber, data);
         writeToUiAppend(output, "writeMultipleData success: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -445,6 +456,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.lockBlock(blockNumber);
         writeToUiAppend(output, "lockBlock: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -454,6 +470,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         byte[] response = icodeSlixMethods.getMultipleBlockSecurityStatus(blockNumber, numberOfBlocks);
         writeToUiAppend(output, "Block security status beginning with blockNumber " + blockNumber + " for " + numberOfBlocks + " blocks");
                 writeToUiAppend(output, printData("getMultipleBlockSecurityStatus\n", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return response;
     }
 
@@ -466,6 +487,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeDsfId(dsfId);
         writeToUiAppend(output, "writeDsfId: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -474,6 +500,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.lockDsfId();
         writeToUiAppend(output, "lockDsfId: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -486,6 +517,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeAfi(afi);
         writeToUiAppend(output, "writeAfi: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -494,6 +530,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.lockAfi();
         writeToUiAppend(output, "lockAfi: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -506,6 +547,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setEas();
         writeToUiAppend(output, "setEas: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -514,6 +560,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.resetEas();
         writeToUiAppend(output, "resetEas: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -522,6 +573,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         byte[] response = icodeSlixMethods.easAlarm();
         writeToUiAppend(output, printData("easAlarm\n", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return response;
         // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
     }
@@ -535,6 +591,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setPasswordEasAfi(password);
         writeToUiAppend(output, "setPasswordEasAfi: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -543,6 +604,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writePasswordEasAfi(password);
         writeToUiAppend(output, "writePasswordEasAfi: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -551,6 +617,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.passwordProtectAfi();
         writeToUiAppend(output, "passwordProtectAfi: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -559,6 +630,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.passwordProtectEas();
         writeToUiAppend(output, "passwordProtectEas: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
@@ -570,6 +646,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         if (!checkValidTag()) return null;
         byte[] response = icodeSlixMethods.inventoryRead(firstBlockNumber, numberOfBlocks);
         writeToUiAppend(output, printData("inventoryRead\n", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return response;
     }
 
@@ -578,18 +659,27 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.formatTagNdef();
         writeToUiAppend(output, "formatTagNde: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
         return success;
     }
 
     private boolean checkValidTag() {
         if ((icodeSlixMethods == null) || (!icodeSlixMethods.isInitialized())) {
-            output.setText("Tag is not available, aborted");
-            errorCode.setText("");
+            runOnUiThread(() -> {
+                output.setText("Tag is not available, aborted");
+                errorCode.setText("");
+            });
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, "Error - tag is not initialied", COLOR_RED);
             return false;
         }
-        output.setText("");
-        errorCode.setText("");
+        runOnUiThread(() -> {
+            output.setText("");
+            errorCode.setText("");
+        });
         return true;
     }
 
