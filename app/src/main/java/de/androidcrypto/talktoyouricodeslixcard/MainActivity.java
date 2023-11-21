@@ -265,6 +265,10 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         byte iFlags4Byte = iFlags4.getFlagsByte();
         writeToUiAppend(output, "iFlags4: " + Utils.byteToHex(iFlags4Byte));
         // result 0x60
+        Iso15693Flags iFlags4b = new Iso15693Flags(iFlags4Byte);
+        writeToUiAppend(output, "iFlags4b:\n" + iFlags4b.dump());
+
+
 
         // playing with flags for Inventory Read
         Iso15693Flags iFlags5 = new Iso15693Flags(false, false, true, false);

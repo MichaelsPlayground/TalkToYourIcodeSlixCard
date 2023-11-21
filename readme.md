@@ -22,19 +22,13 @@ This is a sample app to demonstrate how to work with an ICODE SLIX (SL2S2002) ta
 
 ## Technical data of the tag
 
-Memory Information: 112 bytes, organized in 28 blocks with 4 bytes per block
-
-Maximum NDEF storage size after format: 106 bytes
-
-Technologies supported: ISO/IEC 15693-3 compatible, ISO/IEC 15693-2 compatible
-
-Android Technology Information:
-
-Tech: android.nfc.tech.NfcV, android.nfc.tech.NdefFormatable
-
-Maximum transceive length: 253 bytes
-
-Supported read commands: Single Block Read, Multiple Block Read, Inventory Read, Fast Inventory Read, Get Multiple Block Security Status, Get System Information
+- Memory Information: 112 bytes, organized in 28 blocks with 4 bytes per block
+- Maximum NDEF storage size after format: 106 bytes
+- Technologies supported: ISO/IEC 15693-3 compatible, ISO/IEC 15693-2 compatible
+- Android Technology Information:
+- Tech: android.nfc.tech.NfcV, android.nfc.tech.NdefFormatable
+- Maximum transceive length: 253 bytes
+- Supported read commands: Single Block Read, Multiple Block Read, Inventory Read, Fast Inventory Read, Get Multiple Block Security Status, Get System Information
 
 Datasheet: https://www.nxp.com/docs/en/data-sheet/SL2S2002_SL2S2102.pdf
 

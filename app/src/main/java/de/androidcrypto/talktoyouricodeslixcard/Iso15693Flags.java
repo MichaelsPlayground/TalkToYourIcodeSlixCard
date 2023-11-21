@@ -23,6 +23,11 @@ public class Iso15693Flags {
 
     // setting of bit meanings depends on bit3 Inventory flag
 
+    public Iso15693Flags(byte flagsByte) {
+        this.flagsByte = flagsByte;
+        analyzeFlags();
+        isValid = true;
+    }
 
     public Iso15693Flags(boolean bit1Subcarrier, boolean bit2UplinkDataRate, boolean bit3InventoryFlag, boolean bit4ProtocolExtension) {
         this.bit1Subcarrier = bit1Subcarrier;
@@ -40,7 +45,6 @@ public class Iso15693Flags {
         this.bit7Inventory0OptionFlag = bit7Inventory0OptionFlag;
         this.bit8Inventory0Rfu = false; // bit8 is always RFU = 0 = false
         calculateFlagsInventory0();
-
         isValid = true;
         return true;
     }
@@ -81,6 +85,51 @@ public class Iso15693Flags {
         if (bit7Inventory1OptionFlag) flags = Utils.setBitInByte(flags, 6);
         if (bit8Inventory1Rfu) flags = Utils.setBitInByte(flags, 7);
         flagsByte = flags;
+    }
+
+    private void analyzeFlags() {
+        bit1Subcarrier = Utils.testBit(flagsByte, 0);
+        bit2UplinkDataRate = Utils.testBit(flagsByte, 1);
+        bit3InventoryFlag = Utils.testBit(flagsByte, 2);
+        bit4ProtocolExtension = Utils.testBit(flagsByte, 3);
+        // InventoryFlag not set/false
+        if (!bit3InventoryFlag) {
+            bit5Inventory0SelectFlag = Utils.testBit(flagsByte, 4);
+            bit6Inventory0AddressFlag = Utils.testBit(flagsByte, 5);
+            bit7Inventory0OptionFlag = Utils.testBit(flagsByte, 6);
+            bit8Inventory0Rfu = Utils.testBit(flagsByte, 7);
+        } else {
+            // InventoryFlag set/true
+            bit5Inventory1AfiFlag = Utils.testBit(flagsByte, 4);
+            bit6Inventory1NoOfSlotsFlag = Utils.testBit(flagsByte, 5);
+            bit7Inventory1OptionFlag = Utils.testBit(flagsByte, 6);
+            bit8Inventory1Rfu = Utils.testBit(flagsByte, 7);
+        }
+    }
+
+    public String dump() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ISO15693FLAGS").append("\n");
+        sb.append("bit1 Subcarrier:        ").append(bit1Subcarrier).append("\n");
+        sb.append("bit2 Uplink Data Rate:  ").append(bit2UplinkDataRate).append("\n");
+        sb.append("bit3 InventoryFlag:     ").append(bit3InventoryFlag).append("\n");
+        sb.append("bit4 ProtocolExtension: ").append(bit4ProtocolExtension).append("\n");
+        if(!bit3InventoryFlag) {
+            sb.append("Inventory Flag NOT set").append("\n");
+            sb.append("bit5 Select Flag:       ").append(bit5Inventory0SelectFlag).append("\n");
+            sb.append("bit6 Address Flag:      ").append(bit6Inventory0AddressFlag).append("\n");
+            sb.append("bit7 Option Flag:       ").append(bit7Inventory0OptionFlag).append("\n");
+            sb.append("bit8 Rfu:               ").append(bit8Inventory0Rfu).append("\n");
+        } else {
+            sb.append("Inventory Flag SET").append("\n");
+            sb.append("bit5 AFI Flag:          ").append(bit5Inventory1AfiFlag).append("\n");
+            sb.append("bit6 No Of Slots Flag:  ").append(bit6Inventory1NoOfSlotsFlag).append("\n");
+            sb.append("bit7 Option Flag:       ").append(bit7Inventory1OptionFlag).append("\n");
+            sb.append("bit8 Rfu:               ").append(bit8Inventory1Rfu).append("\n");
+        }
+        sb.append("flagsByte:              ").append(Utils.byteToHex(flagsByte)).append("\n");
+        sb.append("*** dump ended ***");
+        return sb.toString();
     }
 
     /**
