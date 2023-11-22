@@ -52,197 +52,420 @@
                 app:dividerInsetEnd="8dp"
                 app:dividerInsetStart="8dp" />
 
-            <TextView
-                android:id="@+id/tvInformationBlockOperations"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="Block operations (read / write / lock)"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
             <LinearLayout
                 android:id="@+id/llBlockOperations"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="0dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:visibility="visible">
 
+                <TextView
+                    android:id="@+id/tvInformationBlockOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Block operations (read / write / lock)"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="0dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etBlockNumberLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_weight="1"
+                        android:hint="block number (0..27)"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etBlockNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text="0"
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etNumberOfBlocksLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:hint="numb.of blocks (1..28)"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNumberOfBlocks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text="1"
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llBlockReadButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/btnReadSingleBlock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="read single blk" />
+
+                    <Button
+                        android:id="@+id/btnReadMultipleBlocks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_weight="1"
+                        android:text="read multiple blks" />
+
+                </LinearLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etBlockNumberLayout"
+                    android:id="@+id/etDataToWriteLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:hint="block number (0..27)"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etBlockNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="true"
-                        android:inputType="number"
-                        android:text="0"
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etNumberOfBlocksLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:hint="numb.of blocks (1..28)"
+                    android:hint="data to write"
                     app:boxCornerRadiusBottomEnd="5dp"
                     app:boxCornerRadiusBottomStart="5dp"
                     app:boxCornerRadiusTopEnd="5dp"
                     app:boxCornerRadiusTopStart="5dp"
+                    app:endIconMode="clear_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNumberOfBlocks"
+                        android:id="@+id/etDataToWrite"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:focusable="true"
-                        android:inputType="number"
-                        android:text="1"
+                        android:text="abcd"
                         tools:ignore="KeyboardInaccessibleWidget" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llBlockReadButtonOperations"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <Button
-                    android:id="@+id/btnReadSingleBlock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/application_color_light_background_orange"
-                    android:text="read single blk" />
-
-                <Button
-                    android:id="@+id/btnReadMultipleBlocks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_weight="1"
-                    android:text="read multiple blks" />
-
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etDataToWriteLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:hint="data to write"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:endIconMode="clear_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDataToWrite"
+                <LinearLayout
+                    android:id="@+id/llBlockWriteButtonOperations"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:focusable="true"
-                    android:text="abcd"
-                    tools:ignore="KeyboardInaccessibleWidget" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/llBlockWriteButtonOperations"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
+                    <Button
+                        android:id="@+id/btnWriteSingleBlock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="write single blk" />
 
-                <Button
-                    android:id="@+id/btnWriteSingleBlock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/application_color_light_background_orange"
-                    android:text="write single blk" />
+                    <Button
+                        android:id="@+id/btnWriteMultipleBlocks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_weight="1"
+                        android:text="write multiple blks" />
 
-                <Button
-                    android:id="@+id/btnWriteMultipleBlocks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_weight="1"
-                    android:text="write multiple blks" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llBlockLockButtonOperations"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <Button
-                    android:id="@+id/btnLockBlock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/application_color_light_background_orange"
-                    android:text="lock block" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btnGetMultipleBlockSecurityStatus"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="block security status" />
+                    android:text="get all block security status" />
+
+                <LinearLayout
+                    android:id="@+id/llBlockLockButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etLockBlockNumberLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="3"
+                        android:hint="block number (0..27)"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etLockBlockNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text=""
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnLockBlock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/red"
+                        android:text="lock block" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llDsfidOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:dividerInsetEnd="8dp"
+                    app:dividerInsetStart="8dp" />
+
+                <TextView
+                    android:id="@+id/tvInformationDsfidOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="DSFID operations (write / lock)"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llDsfidButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etDsfidLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="3"
+                        android:hint="DSF ID (0..255)"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDsfid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text="0"
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnWriteDsfid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="write DSFID" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnLockDsfid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/red"
+                    android:text="lock DSFID" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llAfiOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:dividerInsetEnd="8dp"
+                    app:dividerInsetStart="8dp" />
+
+                <TextView
+                    android:id="@+id/tvInformationAfiOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="AFI operations (write / lock)"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llAfiButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etAfiLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="3"
+                        android:hint="DSF ID (0..255)"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAfi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text="0"
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnWriteAfi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="write AFI" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnLockAfi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/red"
+                    android:text="lock AFI" />
 
             </LinearLayout>
 
@@ -308,59 +531,6 @@
                     tools:ignore="KeyboardInaccessibleWidget" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etSelectedApplicationIdLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:hint="selected application"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSelectedApplicationId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:focusable="false"
-                    android:text="select an application ..."
-                    tools:ignore="KeyboardInaccessibleWidget" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etSelectedFileIdLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:hint="selected file id"
-                app:boxCornerRadiusBottomEnd="5dp"
-                app:boxCornerRadiusBottomStart="5dp"
-                app:boxCornerRadiusTopEnd="5dp"
-                app:boxCornerRadiusTopStart="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSelectedFileId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:focusable="false"
-                    android:text="select a file ..."
-                    tools:ignore="KeyboardInaccessibleWidget" />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
@@ -369,1846 +539,6 @@
                 app:dividerInsetEnd="8dp"
                 app:dividerInsetStart="8dp" />
 
-            <LinearLayout
-                android:id="@+id/llApplications"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvApplications"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="work with applications"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etApplicationIdLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="application id (6 hex digits)"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etApplicationId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="false"
-                        android:maxLines="1"
-                        android:text=""
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etNumberOfKeysLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="number of keys"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNumberOfKeys"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="false"
-                        android:maxLines="1"
-                        android:text=""
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnSelectApplication"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="select" />
-
-                    <Button
-                        android:id="@+id/btnxx1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="xx" />
-
-                    <Button
-                        android:id="@+id/btnTestNdefTemplate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="NDEF templ" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llFiles"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:dividerInsetEnd="8dp"
-                    app:dividerInsetStart="8dp" />
-
-                <TextView
-                    android:id="@+id/tvFiles"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="work with files"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvFileAccessType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="choose access type"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RadioGroup
-                    android:id="@+id/rgFileAccessType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/rbFileAccessTypeFreeAccess"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="free access" />
-
-                    <RadioButton
-                        android:id="@+id/rbFileAccessTypeKeySecuredAccess"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="key secured access" />
-
-                </RadioGroup>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnSelectFile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="select" />
-
-                    <Button
-                        android:id="@+id/btnListFiles"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:enabled="true"
-                        android:text="Ev2Enc/list" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnGetFileSettings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="file settings" />
-
-                    <Button
-                        android:id="@+id/btnChangeFileSettings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:enabled="true"
-                        android:text="chg file sett" />
-
-                    <Button
-                        android:id="@+id/btnGetFileSettingsMac"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="fs MAC" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:dividerInsetEnd="8dp"
-                app:dividerInsetStart="8dp" />
-
-            <LinearLayout
-                android:id="@+id/llEv2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvEv2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="work with EV2 auth &amp; communication"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv10Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="applications (run all !)"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnSelectApplicationEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="sel" />
-
-                    <Button
-                        android:id="@+id/btnGetAllFileIdsEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="fileIds" />
-
-                    <Button
-                        android:id="@+id/btnGetAllFileSettingsEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="all fs" />
-
-                    <Button
-                        android:id="@+id/btnCompleteFileSettingsEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="compl FS" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv8Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="AES authentication with DEFAULT keys"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnAuthD0AEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="A0 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD1AEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="A1 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD2AEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="A2 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD3AEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="A3 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD4AEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="A4 auth" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv11Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="AES authentication with CHANGED keys"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnAuthD0ACEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="0 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD1ACEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="1 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD2ACEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="2 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD3ACEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="3 auth" />
-
-                    <Button
-                        android:id="@+id/btnAuthD4ACEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="4 auth" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv17Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="LRP authentication with DEFAULT keys"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnAuthD0LEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/light_background_red"
-                        android:text="0" />
-
-                    <Button
-                        android:id="@+id/btnAuthD1LEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="1" />
-
-                    <Button
-                        android:id="@+id/btnAuthD2LEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="2" />
-
-                    <Button
-                        android:id="@+id/btnAuthD3LEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="3" />
-
-                    <Button
-                        android:id="@+id/btnAuthD4LEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="4" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv9Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="diverse action"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnxx4Ev2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="xx" />
-
-                    <Button
-                        android:id="@+id/btnGetCardUidEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="card UID" />
-
-                    <Button
-                        android:id="@+id/btnGetFileSettingsEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="file sett" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv6Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="work with Standard files"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnCreateStandardFileEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:enabled="false"
-                        android:text="Cr Stand 2" />
-
-                    <Button
-                        android:id="@+id/btnWriteStandardFileEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="Wr Stand 2" />
-
-                    <Button
-                        android:id="@+id/btnReadStandardFileEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="Rd Stand 2" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv2Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="create file sets (no auth required)"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnCreateFileSetPlainEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:enabled="false"
-                        android:text="Cr FS plain" />
-
-                    <Button
-                        android:id="@+id/btnFileSetMacedEv2Ev2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:enabled="false"
-                        android:text="Cr FS mac" />
-
-                    <Button
-                        android:id="@+id/btnCreateFileSetEncipheredEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:enabled="true"
-                        android:text="CR FS enciph" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv7Ev2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="change key section"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD3AtoD3ACEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="03->Cha" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD3ACtoD3AEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="03->Def" />
-
-                    <Button
-                        android:id="@+id/btnEnableTransactionTimerEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="enable TT" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvSdm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="SDM Secure Dynamic Messaging"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnCreateNdef256"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="cr NDEF256" />
-
-                    <Button
-                        android:id="@+id/btnSdmChangeFileSettings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="ch fileSett" />
-
-                    <Button
-                        android:id="@+id/btnSdmTestFileSettings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="test SDM file settings" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnSdmGetFileSettingsEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="fs NDEF256" />
-
-                    <Button
-                        android:id="@+id/btnSdmDecryptNdefManualEv2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="man decr" />
-
-                    <Button
-                        android:id="@+id/btnTestLrpEnable"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="man LRP +" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:dividerInsetEnd="8dp"
-                app:dividerInsetStart="8dp" />
-
-            <LinearLayout
-                android:id="@+id/llStandardFile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvStandardFiles"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="work with Standard files"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnReadStandardFile3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="read 3" />
-
-                    <Button
-                        android:id="@+id/btnWriteStandardFile3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="write 3" />
-
-                    <Button
-                        android:id="@+id/btnReadStandardFilex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="x" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnReadStandardFile2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="read 2" />
-
-                    <Button
-                        android:id="@+id/btnWriteStandardFile2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="write 2" />
-
-                    <Button
-                        android:id="@+id/btnReadStandardFile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="read O" />
-
-                </LinearLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etFileStandardFileIdLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="file ID"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFileStandardFileId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="false"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:text="01"
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etFileStandardSizeLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="file size"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFileStandardSize"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="false"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:text="32"
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:dividerInsetEnd="8dp"
-                    app:dividerInsetStart="8dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etFileStandardDataLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="enter data"
-                    app:boxCornerRadiusBottomEnd="5dp"
-                    app:boxCornerRadiusBottomStart="5dp"
-                    app:boxCornerRadiusTopEnd="5dp"
-                    app:boxCornerRadiusTopStart="5dp"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="1000"
-                    app:endIconMode="clear_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFileStandardData"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:focusable="true"
-                        android:inputType="text|textNoSuggestions"
-                        android:maxLength="1000"
-                        android:maxLines="1"
-                        android:text="some data"
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llAuthentication2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:dividerInsetEnd="8dp"
-                    app:dividerInsetStart="8dp" />
-
-                <TextView
-                    android:id="@+id/tvAuthentication2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="authentication with DEFAULT or CHANGED keys"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvAuthKey0"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="0 App Master"
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey0D"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DEF" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey0C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="CHG" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvAuthKey1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="1 App R &amp; W "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey1D"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DEF" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey1C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="CHG" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvAuthKey2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="2 App CAR   "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey2D"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DEF" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey2C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="CHG" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvAuthKey3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="3 App Read  "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey3D"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DEF" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey3C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="CHG" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvAuthKey4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="4 App Write "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey4D"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DEF" />
-
-                    <Button
-                        android:id="@+id/btnAuthKey4C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="CHG" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llKeys2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:dividerInsetEnd="8dp"
-                    app:dividerInsetStart="8dp" />
-
-                <TextView
-                    android:id="@+id/tvKeys2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="change key management (to CHANGED or to DEFAULT)"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvChangeKey"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="0 App Master"
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey0ToC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="to C" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey0ToD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="to D" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvChangeKey1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="1 App R &amp; W "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey1ToC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="to C" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey1ToD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="to D" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvChangeKey2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="2 App CAR   "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey2ToC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="to C" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey2ToD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="to D" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvChangeKey3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="3 App Read  "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey3ToC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="to C" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey3ToD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="to D" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvChangeKey4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:text="4 App Write "
-                        android:textSize="16sp"
-                        android:textStyle="normal" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey4ToC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="to C" />
-
-                    <Button
-                        android:id="@+id/btnChangeKey4ToD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginRight="1dp"
-                        android:layout_weight="1"
-                        android:text="to D" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llKeys"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvKeys"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="key management (change from default)"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnChangeKeyDM0"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="MAS D0 M" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD0"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="D0 M" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="D1 RW" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="D2 CAR" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="D3 R" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="D4 W" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llKeysC"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvKeysC"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="key management (change to default)"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnChangeKeyDM0C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="MAS D0 M" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD0C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="D0 M" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD1C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="D1 RW" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD2C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="D2 CAR" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD3C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="D3 R" />
-
-                    <Button
-                        android:id="@+id/btnChangeKeyD4C"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="D4 W" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llGeneral"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvGeneral"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="general workflow"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnSetupCompleteApplication"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="complete setup" />
-
-                    <Button
-                        android:id="@+id/btnStandardFileWriteRead"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="standard write/read" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnGetTagVersion"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="tag version" />
-
-                    <Button
-                        android:id="@+id/btnGetKeyVersion"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/application_color_light_background_orange"
-                        android:text="get key version" />
-
-                    <Button
-                        android:id="@+id/btnGetKeySettings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="key settings" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnGetFreeMemory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="free memory" />
-
-                    <Button
-                        android:id="@+id/btnFormatPicc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="format" />
-
-                    <Button
-                        android:id="@+id/btnSelectMasterApplication"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="select master app" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:dividerInsetEnd="8dp"
-                app:dividerInsetStart="8dp" />
-
-            <LinearLayout
-                android:id="@+id/llEncryptedResponses"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvEncryptedResponses"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="work with Encrypted Responses"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnGetCardUidDes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="cardUID DES" />
-
-                    <Button
-                        android:id="@+id/btnGetCardUidAes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="cardUID AES" />
-
-                    <Button
-                        android:id="@+id/btnTestGetSesAuthKeys"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="test Ses" />
-
-                </LinearLayout>
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:dividerInsetEnd="8dp"
-                    app:dividerInsetStart="8dp" />
-
-                <TextView
-                    android:id="@+id/tvDesVisualAuth"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="DES visualize authentication"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeAuthSelect"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="sel" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeAuthAuthenticate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="auth" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeAuthRead"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="rd" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeAuthWrite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="wr" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvDesVisualChange"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="change keys"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeChangeKeyDes01ToChanged"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DES 1->C" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeChangeKeyDes01ToDefault"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="DES 1->D" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeAuthAuthenticateC"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="auth C" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeChangeKeyDes01ToChanged2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DES 1->C2" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeChangeKeyDes01ToDefault2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="DES 1 C2->D" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeAuthAuthenticateC2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="auth C2" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeChangeKeyDes00ToChanged"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="DES 0->C" />
-
-                    <Button
-                        android:id="@+id/btnDesVisualizeChangeKeyDes00ToDefault"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:text="DES 0->D" />
-
-                </LinearLayout>
-
-            </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"

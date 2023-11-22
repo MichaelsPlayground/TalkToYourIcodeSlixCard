@@ -1,15 +1,16 @@
 package de.androidcrypto.talktoyouricodeslixcard;
 
-import static de.androidcrypto.talktoyouricodeslixcard.Utils.printData;
-
+import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.NfcV;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.IOException;
 import java.util.Arrays;
 
-public class MainActivitySample {
+public class MainActivitySample extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
     private String TAG = MainActivity.class.getSimpleName();
 

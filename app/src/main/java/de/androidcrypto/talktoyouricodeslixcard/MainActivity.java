@@ -32,6 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,12 +62,28 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
      * section for block operations
      */
 
+    LinearLayout llBlockOperations;
     Button btnReadSingleBlock, btnReadMultipleBlocks,
             btnWriteSingleBlock, btnWriteMultipleBlocks,
             btnLockBlock, btnGetMultipleBlockSecurityStatus;
+    private com.google.android.material.textfield.TextInputLayout etBlockNumberLayout, etNumberOfBlocksLayout, etDataToWriteLayout;
     private com.google.android.material.textfield.TextInputEditText etBlockNumber, etNumberOfBlocks, etDataToWrite;
 
+    /**
+     * section for DSFID operations
+     */
+    LinearLayout llDsfidOperations;
+    Button btnWriteDsfid, btnLockDsfid;
+    private com.google.android.material.textfield.TextInputLayout etDsfidLayout;
+    private com.google.android.material.textfield.TextInputEditText etDsfid;
 
+    /**
+     * section for AFI operations
+     */
+    LinearLayout llAfiOperations;
+    Button btnWriteAfi, btnLockAfi;
+    private com.google.android.material.textfield.TextInputLayout etAfiLayout;
+    private com.google.android.material.textfield.TextInputEditText etAfi;
 
     /**
      * section general
@@ -104,15 +121,33 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         setSupportActionBar(myToolbar);
 
         // block operations section
+        llBlockOperations = findViewById(R.id.llBlockOperations);
         btnReadSingleBlock = findViewById(R.id.btnReadSingleBlock);
         btnReadMultipleBlocks = findViewById(R.id.btnReadMultipleBlocks);
         btnWriteSingleBlock = findViewById(R.id.btnWriteSingleBlock);
         btnWriteMultipleBlocks = findViewById(R.id.btnWriteMultipleBlocks);
         btnLockBlock = findViewById(R.id.btnLockBlock);
         btnGetMultipleBlockSecurityStatus = findViewById(R.id.btnGetMultipleBlockSecurityStatus);
+        etBlockNumberLayout = findViewById(R.id.etBlockNumberLayout);
         etBlockNumber = findViewById(R.id.etBlockNumber);
+        etNumberOfBlocksLayout = findViewById(R.id.etNumberOfBlocksLayout);
         etNumberOfBlocks = findViewById(R.id.etNumberOfBlocks);
+        etDataToWriteLayout = findViewById(R.id.etDataToWriteLayout);
         etDataToWrite = findViewById(R.id.etDataToWrite);
+
+        // dsfid operations section
+        llDsfidOperations = findViewById(R.id.llDsfidOperations);
+        btnWriteDsfid = findViewById(R.id.btnWriteDsfid);
+        btnLockDsfid = findViewById(R.id.btnLockDsfid);
+        etDsfidLayout = findViewById(R.id.etDsfidLayout);
+        etDsfid = findViewById(R.id.etDsfid);
+
+        // afi operations section
+        llAfiOperations = findViewById(R.id.llAfiOperations);
+        btnWriteAfi = findViewById(R.id.btnWriteAfi);
+        btnLockAfi = findViewById(R.id.btnLockAfi);
+        etAfiLayout = findViewById(R.id.etAfiLayout);
+        etAfi = findViewById(R.id.etAfi);
 
         // general section
         output = findViewById(R.id.etOutput);
@@ -123,36 +158,245 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
         // hide soft keyboard from showing up on startup
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        // hide all layouts
+        allLayoutsInvisible();
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        /**
+         * block operations
+         */
 
         btnReadSingleBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readSingleBlock(Integer.parseInt(etBlockNumber.getText().toString()));
+                String blockNumber = etBlockNumber.getText().toString();
+                if (TextUtils.isEmpty(blockNumber)) {
+                    etBlockNumberLayout.setError("blockNumber is empty");
+                    return;
+                } else {
+                    etBlockNumberLayout.setError("");
+                }
+                readSingleBlock(Integer.parseInt(blockNumber));
             }
         });
 
         btnReadMultipleBlocks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readMultipleBlocks(Integer.parseInt(etBlockNumber.getText().toString()), Integer.parseInt(etNumberOfBlocks.getText().toString()));
+                String blockNumber = etBlockNumber.getText().toString();
+                if (TextUtils.isEmpty(blockNumber)) {
+                    etBlockNumberLayout.setError("blockNumber is empty");
+                    return;
+                } else {
+                    etBlockNumberLayout.setError("");
+                }
+                String numberOfblocks = etNumberOfBlocks.getText().toString();
+                if (TextUtils.isEmpty(numberOfblocks)) {
+                    etNumberOfBlocksLayout.setError("number of blocks is empty");
+                    return;
+                } else {
+                    etNumberOfBlocksLayout.setError("");
+                }
+                readMultipleBlocks(Integer.parseInt(blockNumber), Integer.parseInt(numberOfblocks));
             }
         });
 
         btnWriteSingleBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                writeSingleBlock(Integer.parseInt(etBlockNumber.getText().toString()), etDataToWrite.getText().toString().getBytes(StandardCharsets.UTF_8));
+                String blockNumber = etBlockNumber.getText().toString();
+                if (TextUtils.isEmpty(blockNumber)) {
+                    etBlockNumberLayout.setError("blockNumber is empty");
+                    return;
+                } else {
+                    etBlockNumberLayout.setError("");
+                }
+                String data = etDataToWrite.getText().toString();
+                if (TextUtils.isEmpty(data)) {
+                    etDataToWriteLayout.setError("data is empty");
+                    return;
+                } else {
+                    etDataToWriteLayout.setError("");
+                }
+                writeSingleBlock(Integer.parseInt(blockNumber), data.getBytes(StandardCharsets.UTF_8));
             }
         });
 
         btnWriteMultipleBlocks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                writeMultipleBlocks(Integer.parseInt(etBlockNumber.getText().toString()), etDataToWrite.getText().toString().getBytes(StandardCharsets.UTF_8));
+                String blockNumber = etBlockNumber.getText().toString();
+                if (TextUtils.isEmpty(blockNumber)) {
+                    etBlockNumberLayout.setError("blockNumber is empty");
+                    return;
+                } else {
+                    etBlockNumberLayout.setError("");
+                }
+                String data = etDataToWrite.getText().toString();
+                if (TextUtils.isEmpty(data)) {
+                    etDataToWriteLayout.setError("data is empty");
+                    return;
+                } else {
+                    etDataToWriteLayout.setError("");
+                }
+                writeMultipleBlocks(Integer.parseInt(blockNumber), data.getBytes(StandardCharsets.UTF_8));
             }
         });
+
+        btnLockBlock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String blockNumber = etBlockNumber.getText().toString();
+                if (TextUtils.isEmpty(blockNumber)) {
+                    etBlockNumberLayout.setError("blockNumber is empty");
+                    return;
+                } else {
+                    etBlockNumberLayout.setError("");
+                }
+                int blockNumberToLock = Integer.parseInt(blockNumber);
+                // this is a permanently operation - show a confirmation dialog
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                // todo check lockBlock(blockNumberToLock);
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                // nothing to do
+                                writeToUiAppend(output, "lock of the block aborted");
+                                break;
+                        }
+                    }
+                };
+                final String selectedFolderString = "You are going to lock the block " + blockNumberToLock + "\n\n" +
+                        "This is an irrevocable setting that cannot get undone" + "\n\n" +
+                        "Do you want to proceed ?";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener)
+                        .setTitle("LOCK the block " + blockNumberToLock)
+                        .show();
+            }
+        });
+
+        btnGetMultipleBlockSecurityStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getAllMultipleBlocksSecurityStatus();
+            }
+        });
+
+        /**
+         * dsfid operations section
+         */
+
+        btnWriteDsfid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String dsfid = etDsfid.getText().toString();
+                if (TextUtils.isEmpty(dsfid)) {
+                    etDsfidLayout.setError("DSFID is empty");
+                    return;
+                } else {
+                    etDsfidLayout.setError("");
+                }
+                writeDfsId(Integer.parseInt(dsfid));
+            }
+        });
+
+        btnLockDsfid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // this is a permanently operation - show a confirmation dialog
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                lockDfsId();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                // nothing to do
+                                writeToUiAppend(output, "lock of the DSFID aborted");
+                                break;
+                        }
+                    }
+                };
+                final String selectedFolderString = "You are going to lock the DSFID " + "\n\n" +
+                        "This is an irrevocable setting that cannot get undone" + "\n\n" +
+                        "Do you want to proceed ?";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener)
+                        .setTitle("LOCK the DSFID")
+                        .show();
+
+            }
+        });
+
+        /**
+         * afi operations section
+         */
+
+        btnWriteAfi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String afi = etAfi.getText().toString();
+                if (TextUtils.isEmpty(afi)) {
+                    etAfiLayout.setError("AFI is empty");
+                    return;
+                } else {
+                    etAfiLayout.setError("");
+                }
+                writeAfi(Integer.parseInt(afi));
+            }
+        });
+
+        btnLockAfi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // this is a permanently operation - show a confirmation dialog
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                lockAfi();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                // nothing to do
+                                writeToUiAppend(output, "lock of the DSFID aborted");
+                                break;
+                        }
+                    }
+                };
+                final String selectedFolderString = "You are going to lock the AFI " + "\n\n" +
+                        "This is an irrevocable setting that cannot get undone" + "\n\n" +
+                        "Do you want to proceed ?";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener)
+                        .setTitle("LOCK the AFI")
+                        .show();
+
+            }
+        });
+
+        /**
+         *
+         */
+
 
 /*
         formatPicc.setOnClickListener(new View.OnClickListener() {
@@ -236,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, outputDivider);
         Inventory inventory = new Inventory(dsfId, uid);
         writeToUiAppend(output, inventory.dump());
-
+/*
         writeToUiAppend(output, outputDivider);
         response = icodeSlixMethods.readSingleBlock(0);
         writeToUiAppend(output, printData("readSingleBlock 00", response));
@@ -244,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         int startBlockNumber = 0;
         int numberOfBlocks = 28;
         byte[] multipleBlocksSecurityStatus = getMultipleBlocksSecurityStatus(startBlockNumber, numberOfBlocks);
-
+*/
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
@@ -258,10 +502,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         //writePasswordEasAfi(easAfiPassword);
 */
 
+        /*
+
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
         byte afi = (byte) 0x00;
         writeAfi(afi);
+
+         */
 /*
         byte[] defaultPassword = Utils.hexStringToByteArray("00000000");
         setPasswordEasAfi(defaultPassword);
@@ -279,10 +527,13 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         //byte afi = (byte) 0xAE;
         writeAfi(afi);
 */
+        /*
         //dsfId = (byte) 0x02;
         byte dsfId = (byte) 0x00;
         //byte dsfId = (byte) 0xD1;
         writeDfsId(dsfId);
+
+         */
 /*
         int blockNumber = 0;
         byte[] dataBlock00 = readSingleBlock(blockNumber);
@@ -296,7 +547,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         resetEas();
         easAlarm();
 */
-
+/*
         writeToUiAppend(output, outputDivider);
         // playing with flags
         Iso15693Flags iFlags1 = new Iso15693Flags(false, true, false, false);
@@ -343,14 +594,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         byte iFlags3Byte = iFlags3.getFlagsByte();
         writeToUiAppend(output, "iFlags3: " + Utils.byteToHex(iFlags3Byte));
         // result 0x26
-
-        writeToUiAppend(output, outputDivider);
+*/
+        //writeToUiAppend(output, outputDivider);
         //byte afi = (byte) 0x03;
-
+/*
         int startBlock = 0;
         int numberOfBlocksByte = 28;
         inventoryRead(startBlock, numberOfBlocksByte);
-
+*/
         //response = icodeSlixMethods.inventoryRead(startBlock, numberOfBlocksByte);
         //response = icodeSlixMethods.inventoryRead(afi, startBlock, numberOfBlocksByte);
         //response = icodeSlixMethods.inventoryRead(afi, (byte) 0x00, (byte) 0x00, startBlock, numberOfBlocksByte);
@@ -369,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, printData("inventoryRead\n", response));
 
  */
-
+/*
         byte[] testData1 = Utils.generateTestData(8);
         writeMultipleBlocks(0, testData1);
 
@@ -378,6 +629,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
 
         byte[] testData3 = Utils.generateTestData(112);
         writeMultipleBlocks(0, testData3);
+
+ */
 /*
         success = icodeSlixMethods.lockDsfId();
         writeToUiAppend(output, "lockDsfId: " + success);
@@ -386,9 +639,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         lockDfsId();
         lockAfi();
          */
-
+/*
         readMultipleBlocks(0, 28);
-
+*/
         //writeSingleBlock(data);
 
         // formatTagNdef();
@@ -403,9 +656,10 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
         byte[] response = icodeSlixMethods.readSingleBlock(blockNumber);
-        writeToUiAppend(output, printData("readSingleBlock 00", response));
+        writeToUiAppend(output, printData("readSingleBlock", response));
         if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+            writeToUiAppend(output, "data: " + new String(response, StandardCharsets.UTF_8));
         } else {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
         }
@@ -419,6 +673,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         writeToUiAppend(output, printData("readMultipleBlocks from " + blockNumber + " read " + numberOfBlocks + " blocks", response));
         if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+            writeToUiAppend(output, "data: " + new String(response, StandardCharsets.UTF_8));
         } else {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
         }
@@ -464,6 +719,19 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         return success;
     }
 
+    private byte[] getAllMultipleBlocksSecurityStatus() {
+        if (!checkValidTag()) return null;
+        writeToUiAppend(output, outputDivider);
+        byte[] response = icodeSlixMethods.getAllMultipleBlockSecurityStatus();
+        writeToUiAppend(output, printData("getMultipleBlockSecurityStatus\n", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
+        return response;
+    }
+
     private byte[] getMultipleBlocksSecurityStatus(int blockNumber, int numberOfBlocks) {
         if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
@@ -482,15 +750,16 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
      * section for dsfid
      */
 
-    private boolean writeDfsId(byte dfsId) {
+    private boolean writeDfsId(int dfsId) {
         if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeDsfId(dsfId);
+        boolean success = icodeSlixMethods.writeDsfId((byte) (dsfId & 0xff));
         writeToUiAppend(output, "writeDsfId: " + success);
         if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
         } else {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+            writeToUiAppend(errorCode, "Is DSFID locked ?");
         }
         return success;
     }
@@ -673,7 +942,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 output.setText("Tag is not available, aborted");
                 errorCode.setText("");
             });
-            writeToUiAppendBorderColor(errorCode, errorCodeLayout, "Error - tag is not initialied", COLOR_RED);
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, "Error - tag is not initialized", COLOR_RED);
             return false;
         }
         runOnUiThread(() -> {
@@ -722,8 +991,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
      * section for layout handling
      */
     private void allLayoutsInvisible() {
-        //llApplicationHandling.setVisibility(View.GONE);
-        //llStandardFile.setVisibility(View.GONE);
+        llBlockOperations.setVisibility(View.GONE);
+        llDsfidOperations.setVisibility(View.GONE);
     }
 
     /**
@@ -913,6 +1182,36 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_main, menu);
+
+        MenuItem mBlockOperations = menu.findItem(R.id.action_block_operations);
+        mBlockOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                allLayoutsInvisible();
+                llBlockOperations.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+        MenuItem mDsfidOperations = menu.findItem(R.id.action_dsfid_operations);
+        mDsfidOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                allLayoutsInvisible();
+                llDsfidOperations.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+        MenuItem mAfiOperations = menu.findItem(R.id.action_afi_operations);
+        mAfiOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                allLayoutsInvisible();
+                llAfiOperations.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
 
         MenuItem mApplications = menu.findItem(R.id.action_applications);
         mApplications.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {

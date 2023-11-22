@@ -82,7 +82,7 @@ public class IcodeSlixMethods {
     private static final String RESPONSE_FAILURE_STRING = "FAILURE";
     // constants
     // todo get data from SystemInformation
-    private int MAXIMUM_BLOCK_NUMBER = 27; // fixed for ICODE SLIX S with 28 blocks * 4 bytes = 108 bytes user memory
+    private int MAXIMUM_BLOCK_NUMBER; // fixed for ICODE SLIX S with 28 blocks * 4 bytes = 108 bytes user memory = 27
     // from system information
     private int NUMBER_OF_BLOCKS;
     private int BYTES_PER_BLOCK;
@@ -610,6 +610,13 @@ sum = 32 + 64 = 96 = 60h
         return trimFirstByte(response);
     }
 
+    /**
+     * This is a service method to return the status of all blocks
+     */
+    public byte[] getAllMultipleBlockSecurityStatus() {
+        return getMultipleBlockSecurityStatus(0, NUMBER_OF_BLOCKS);
+    }
+
     public byte[] getMultipleBlockSecurityStatus(int blockNumber, int numberOfBlocks) {
         // sanity check
         if (!checkBlockNumber(blockNumber)) {
@@ -1052,6 +1059,7 @@ sum = 32 + 64 = 96 = 60h
                 NUMBER_OF_BLOCKS = systemInformation.getNumberOfBlocks();
                 BYTES_PER_BLOCK = systemInformation.getBytesPerBlock();
                 MEMORY_SIZE = systemInformation.getMemorySizeInt();
+                MAXIMUM_BLOCK_NUMBER = NUMBER_OF_BLOCKS - 1;
 
                 Log.d(TAG, systemInformation.dump());
                 writeToUiAppend(textView, systemInformation.dump());

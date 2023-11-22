@@ -6,6 +6,26 @@
     <!-- https://fonts.google.com/icons?selected=Material+Icons -->
 
     <item
+        android:id="@+id/action_block_operations"
+        android:title="Block Operations"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_dsfid_operations"
+        android:title="DSFID Operations"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_afi_operations"
+        android:title="AFI Operations"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_eas_operations"
+        android:title="EAS Operations"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_applications"
         android:title="Applications"
         app:showAsAction="never"/>
