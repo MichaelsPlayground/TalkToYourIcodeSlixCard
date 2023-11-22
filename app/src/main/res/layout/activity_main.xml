@@ -470,7 +470,84 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:id="@+id/llEasOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical"
+                android:visibility="visible">
 
+                <TextView
+                    android:id="@+id/tvInformationEasOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="EAS operations (set / unset / Alarm / Lock)"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llEas1ButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/btnSetEas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="set EAS" />
+
+                    <Button
+                        android:id="@+id/btnUnsetEas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_weight="1"
+                        android:text="unset EAS" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llEas2ButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/btnEasAlarm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="EAS Alarm" />
+
+                    <Button
+                        android:id="@+id/btnLockEas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/red"
+                        android:text="lock EAS" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
 
 

@@ -85,6 +85,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     private com.google.android.material.textfield.TextInputLayout etAfiLayout;
     private com.google.android.material.textfield.TextInputEditText etAfi;
 
+    /**
+     * section for EAS operations
+     */
+    LinearLayout llEasOperations;
+    Button btnSetEas, btnUnsetEas, btnEasAlarm, btnLockEas;
 
 
 
@@ -162,7 +167,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         etAfi = findViewById(R.id.etAfi);
 
         // eas operations section
-
+        llEasOperations = findViewById(R.id.llEasOperations);
+        btnSetEas = findViewById(R.id.btnSetEas);
+        btnUnsetEas = findViewById(R.id.btnUnsetEas);
+        btnEasAlarm = findViewById(R.id.btnEasAlarm);
+        btnLockEas = findViewById(R.id.btnLockEas);
 
 
         // NDEF operations section
@@ -420,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
          * eas operations section
          */
 
-
+        // todo eas clicks
 
 
 
@@ -846,6 +855,19 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         return success;
     }
 
+    private boolean lockEas() {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.lockEas();
+        writeToUiAppend(output, "lockEas: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
+        return success;
+    }
+
     private byte[] easAlarm() {
         if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
@@ -1033,6 +1055,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         llBlockOperations.setVisibility(View.GONE);
         llDsfidOperations.setVisibility(View.GONE);
         llAfiOperations.setVisibility(View.GONE);
+        llEasOperations.setVisibility(View.GONE);
+
+        llNdefOperations.setVisibility(View.GONE);
     }
 
     /**
@@ -1253,12 +1278,24 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             }
         });
 
-        MenuItem mApplications = menu.findItem(R.id.action_applications);
-        mApplications.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        MenuItem mEasOperations = menu.findItem(R.id.action_eas_operations);
+        mEasOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 allLayoutsInvisible();
-                //llApplicationHandling.setVisibility(View.VISIBLE);
+                llEasOperations.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+
+
+        MenuItem mNdefOperations = menu.findItem(R.id.action_ndef_operations);
+        mNdefOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                allLayoutsInvisible();
+                llNdefOperations.setVisibility(View.VISIBLE);
                 return false;
             }
         });
