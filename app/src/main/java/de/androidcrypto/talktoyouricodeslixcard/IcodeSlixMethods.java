@@ -4,6 +4,8 @@ import static de.androidcrypto.talktoyouricodeslixcard.Utils.printData;
 
 import android.app.Activity;
 import android.icu.lang.UScript;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcV;
@@ -752,8 +754,18 @@ sum = 32 + 64 = 96 = 60h
     }
 
     /**
-     * This is not a command natively supported by the ICODE SLIX tag. It divides the data into parts of
-     * 4 bytes each and writes them to the tag, beginning at blockNumber
+     * This is not a command natively supported by the ICODE SLIX tag.
+     * It will write 0x00 to the complete tag memory of the tag ("erasing")
+     */
+
+    public boolean writeClearTagMemory() {
+        byte[] emptyTag = new byte[MEMORY_SIZE];
+        return writeMultipleBlocks(0, emptyTag);
+    }
+
+    /**
+     * This is not a command natively supported by the ICODE SLIX tag.
+     * It divides the data into parts of 4 bytes each and writes them to the tag, beginning at blockNumber
      * @param blockNumber
      * @param data
      * @return true if all data was written with success
@@ -920,6 +932,49 @@ sum = 32 + 64 = 96 = 60h
         errorCode = RESPONSE_OK;
         errorCodeReason = RESPONSE_OK_STRING;
         return true;
+    }
+
+    public boolean writeNdefMessage(String message) {
+        byte[] blockNdef = createNdefMessage(message);
+        byte[] block00 = Utils.hexStringToByteArrayBlanks("E1 40 0E 01");
+        /*
+        boolean success;
+        success = writeSingleBlock(0, block00);
+        if (success) {
+            success = writeMultipleBlocks(1, blockNdef);
+        } else {
+            return false;
+        }
+        return true;
+*/
+
+        byte[] block01 = Utils.hexStringToByteArrayBlanks("03 00 FE 00"); // this is an empty NDEF message
+        boolean success;
+        success = writeSingleBlock(0, block00);
+        if (success) {
+            success = writeSingleBlock(1, block01);
+        } else {
+            return false;
+        }
+        return true;
+
+    }
+
+    private byte[] createNdefMessage(String message) {
+        Log.d(TAG, "createNdefMessage: " + message);
+        NdefRecord ndefRecord = NdefRecord.createTextRecord("en", message);
+        NdefMessage ndefMessage = new NdefMessage(ndefRecord);
+        byte[] ndefMessageByte = ndefMessage.toByteArray();
+        Log.d(TAG, printData("ndefMessageByte", ndefMessageByte));
+        int ndefMessageLength = ndefMessageByte.length;
+        int ndefMessageTotalLength = ndefMessageLength + 3;
+        byte[] fullNdefMessage = new byte[ndefMessageTotalLength];
+        fullNdefMessage[0] = (byte) (ndefMessageTotalLength & 0xff);
+        fullNdefMessage[1] = (byte) (ndefMessageLength & 0xff);
+        System.arraycopy(ndefMessageByte, 0, fullNdefMessage, 2, ndefMessageLength);
+        fullNdefMessage[ndefMessageTotalLength - 1] = (byte) 0xFE; // terminator
+        Log.d(TAG, printData("fullNdefMessage", fullNdefMessage));
+        return fullNdefMessage;
     }
 
     public boolean formatTagNdef() {

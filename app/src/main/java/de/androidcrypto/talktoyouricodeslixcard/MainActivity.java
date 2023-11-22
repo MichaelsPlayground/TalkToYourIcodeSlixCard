@@ -85,6 +85,18 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     private com.google.android.material.textfield.TextInputLayout etAfiLayout;
     private com.google.android.material.textfield.TextInputEditText etAfi;
 
+
+
+
+    /**
+     * section for NDEF operations
+     */
+    LinearLayout llNdefOperations;
+    Button btnWriteNdefMessage, btnClearTag;
+    private com.google.android.material.textfield.TextInputLayout etNdefMessageLayout;
+    private com.google.android.material.textfield.TextInputEditText etNdefMessage;
+
+
     /**
      * section general
      */
@@ -148,6 +160,17 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         btnLockAfi = findViewById(R.id.btnLockAfi);
         etAfiLayout = findViewById(R.id.etAfiLayout);
         etAfi = findViewById(R.id.etAfi);
+
+        // eas operations section
+
+
+
+        // NDEF operations section
+        llNdefOperations = findViewById(R.id.llNdefOperations);
+        btnWriteNdefMessage = findViewById(R.id.btnNdefWriteMessage);
+        btnClearTag = findViewById(R.id.btnNdefClearTag);
+        etNdefMessageLayout = findViewById(R.id.etNdefMessageLayout);
+        etNdefMessage = findViewById(R.id.etNdefMessage);
 
         // general section
         output = findViewById(R.id.etOutput);
@@ -319,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                lockDfsId();
+                                lockDsfId();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
@@ -370,12 +393,12 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                lockAfi();
+                                // todo lockAfi();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
                                 // nothing to do
-                                writeToUiAppend(output, "lock of the DSFID aborted");
+                                writeToUiAppend(output, "lock of the AFI aborted");
                                 break;
                         }
                     }
@@ -394,58 +417,44 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         });
 
         /**
+         * eas operations section
+         */
+
+
+
+
+
+
+        /**
          *
          */
 
 
-/*
-        formatPicc.setOnClickListener(new View.OnClickListener() {
+        /**
+         * NDEF operations section
+         */
+
+        btnWriteNdefMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // get the free memory on the tag
-                clearOutputFields();
-                String logString = "format the PICC";
-                writeToUiAppend(output, logString);
-
-                // open a confirmation dialog
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                //Yes button clicked
-
-                                boolean success = true;
-                                byte[] responseData = null;
-                                if (success) {
-                                    writeToUiAppend(output, logString + " SUCCESS");
-                                    writeToUiAppendBorderColor(errorCode, errorCodeLayout, logString + " SUCCESS", COLOR_GREEN);
-                                    vibrateShort();
-                                } else {
-                                    writeToUiAppend(output, logString + " FAILURE with error " + EV3.getErrorCode(responseData));
-                                    writeToUiAppendBorderColor(errorCode, errorCodeLayout, logString + " FAILURE with error code: " + Utils.bytesToHexNpeUpperCase(responseData), COLOR_RED);
-                                }
-                                break;
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                //No button clicked
-                                // nothing to do
-                                writeToUiAppend(output, "format of the PICC aborted");
-                                break;
-                        }
-                    }
-                };
-                final String selectedFolderString = "You are going to format the PICC " + "\n\n" +
-                        "Do you want to proceed ?";
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
-                        .setNegativeButton(android.R.string.no, dialogClickListener)
-                        .setTitle("FORMAT the PICC")
-                        .show();
-
+                String message = etNdefMessage.getText().toString();
+                if (TextUtils.isEmpty(message)) {
+                    etNdefMessageLayout.setError("NDEF message is empty");
+                    return;
+                } else {
+                    etNdefMessageLayout.setError("");
+                }
+                writeNdefMessage(message);
             }
         });
-*/
+
+        btnClearTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearTagMemory();
+            }
+        });
+
     }
 
     /**
@@ -750,7 +759,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
      * section for dsfid
      */
 
-    private boolean writeDfsId(int dfsId) {
+    private boolean writeDfsId(int dsfId) {
         if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.writeDsfId((byte) (dsfId & 0xff));
@@ -764,7 +773,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         return success;
     }
 
-    private boolean lockDfsId() {
+    private boolean lockDsfId() {
         if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.lockDsfId();
@@ -781,10 +790,10 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
      * section for afi
      */
 
-    private boolean writeAfi(byte afi) {
+    private boolean writeAfi(int afi) {
         if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.writeAfi(afi);
+        boolean success = icodeSlixMethods.writeAfi((byte) (afi & 0xff));
         writeToUiAppend(output, "writeAfi: " + success);
         if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
@@ -908,19 +917,20 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     }
 
     /**
-     * section for general
+     * section for ndef messages
      */
 
-    private byte[] inventoryRead(int firstBlockNumber, int numberOfBlocks) {
-        if (!checkValidTag()) return null;
-        byte[] response = icodeSlixMethods.inventoryRead(firstBlockNumber, numberOfBlocks);
-        writeToUiAppend(output, printData("inventoryRead\n", response));
+    private boolean writeNdefMessage(String message) {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.writeNdefMessage(message);
+        writeToUiAppend(output, "writeNdefMessage: " + success);
         if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
         } else {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
         }
-        return response;
+        return success;
     }
 
     private boolean formatTagNdef() {
@@ -934,6 +944,35 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
         }
         return success;
+    }
+
+    private boolean clearTagMemory() {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.writeClearTagMemory();
+        writeToUiAppend(output, "writeClearTagMemory: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
+        return success;
+    }
+
+    /**
+     * section for general
+     */
+
+    private byte[] inventoryRead(int firstBlockNumber, int numberOfBlocks) {
+        if (!checkValidTag()) return null;
+        byte[] response = icodeSlixMethods.inventoryRead(firstBlockNumber, numberOfBlocks);
+        writeToUiAppend(output, printData("inventoryRead\n", response));
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
+        return response;
     }
 
     private boolean checkValidTag() {
@@ -993,6 +1032,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     private void allLayoutsInvisible() {
         llBlockOperations.setVisibility(View.GONE);
         llDsfidOperations.setVisibility(View.GONE);
+        llAfiOperations.setVisibility(View.GONE);
     }
 
     /**
