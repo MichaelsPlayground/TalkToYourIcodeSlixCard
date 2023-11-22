@@ -935,9 +935,10 @@ sum = 32 + 64 = 96 = 60h
     }
 
     public boolean writeNdefMessage(String message) {
-        byte[] blockNdef = createNdefMessage(message);
-        byte[] block00 = Utils.hexStringToByteArrayBlanks("E1 40 0E 01");
-        /*
+        byte[] blockNdef = createNdefTextMessage(message);
+        //byte[] block00 = Utils.hexStringToByteArrayBlanks("E1 40 0E 01"); // NDEF message is readable and writable
+        byte[] block00 = Utils.hexStringToByteArrayBlanks("E1 43 0E 01"); // NDEF message is readable but NOT writable
+
         boolean success;
         success = writeSingleBlock(0, block00);
         if (success) {
@@ -946,8 +947,8 @@ sum = 32 + 64 = 96 = 60h
             return false;
         }
         return true;
-*/
 
+/*
         byte[] block01 = Utils.hexStringToByteArrayBlanks("03 00 FE 00"); // this is an empty NDEF message
         boolean success;
         success = writeSingleBlock(0, block00);
@@ -957,10 +958,19 @@ sum = 32 + 64 = 96 = 60h
             return false;
         }
         return true;
+        // correct e1400e000311d1010d5402656e6d79206d657373616765fe00... my message
+        // header  e1400e
+        //               00 ??
+        //                 0311
+        //                   11h = 17d
+        //                     d1010d5402656e6d79206d657373616765fe
+        //                     |          17 bytes              |
+        //                                                         00..
 
+ */
     }
 
-    private byte[] createNdefMessage(String message) {
+    private byte[] createNdefTextMessage(String message) {
         Log.d(TAG, "createNdefMessage: " + message);
         NdefRecord ndefRecord = NdefRecord.createTextRecord("en", message);
         NdefMessage ndefMessage = new NdefMessage(ndefRecord);
@@ -969,7 +979,7 @@ sum = 32 + 64 = 96 = 60h
         int ndefMessageLength = ndefMessageByte.length;
         int ndefMessageTotalLength = ndefMessageLength + 3;
         byte[] fullNdefMessage = new byte[ndefMessageTotalLength];
-        fullNdefMessage[0] = (byte) (ndefMessageTotalLength & 0xff);
+        fullNdefMessage[0] = (byte) (0x03);
         fullNdefMessage[1] = (byte) (ndefMessageLength & 0xff);
         System.arraycopy(ndefMessageByte, 0, fullNdefMessage, 2, ndefMessageLength);
         fullNdefMessage[ndefMessageTotalLength - 1] = (byte) 0xFE; // terminator
