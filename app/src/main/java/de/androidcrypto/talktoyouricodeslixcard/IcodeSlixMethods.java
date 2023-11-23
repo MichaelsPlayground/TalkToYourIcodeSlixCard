@@ -980,7 +980,7 @@ sum = 32 + 64 = 96 = 60h
     private SystemInformation getSystemInformation() {
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x02, // flags
-                /* COMMAND */ GET_SYSTEM_INFORMATION_COMMAND, //(byte)0x20, // command read single block
+                /* COMMAND */ GET_SYSTEM_INFORMATION_COMMAND, //(byte)0x2B, // command get system information
         };
         byte[] response;
         try {
@@ -1001,7 +1001,7 @@ sum = 32 + 64 = 96 = 60h
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags
                 /* COMMAND */ GET_RANDOM_NUMBER_COMMAND, //(byte)0xb2, // command get random number
-                /* MANUF ID*/ MANUFACTURER_CODE_NXP,
+                /* MANUF ID*/ MANUFACTURER_CODE,
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
         };
         // manufacturer code is 04 for NXP tags
