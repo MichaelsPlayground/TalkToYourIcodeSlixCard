@@ -282,7 +282,7 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginRight="4dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/red"
+                        android:enabled="false"
                         android:text="lock block" />
 
                 </LinearLayout>
@@ -374,7 +374,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/red"
+                    android:enabled="false"
                     android:text="lock DSFID" />
 
             </LinearLayout>
@@ -424,7 +424,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginEnd="0dp"
                         android:layout_weight="3"
-                        android:hint="DSF ID (0..255)"
+                        android:hint="AFI (0..255)"
                         app:boxCornerRadiusBottomEnd="5dp"
                         app:boxCornerRadiusBottomStart="5dp"
                         app:boxCornerRadiusTopEnd="5dp"
@@ -464,11 +464,10 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/red"
+                    android:enabled="false"
                     android:text="lock AFI" />
 
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/llEasOperations"
@@ -542,17 +541,189 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginRight="4dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/red"
+                        android:enabled="false"
                         android:text="lock EAS" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/llPasswordOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical"
+                android:visibility="visible">
 
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:dividerInsetEnd="8dp"
+                    app:dividerInsetStart="8dp" />
 
+                <TextView
+                    android:id="@+id/tvInformationPasswordOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Password operations (set / write / password lock AFI / EAS)"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/tvInformationPassword2Operations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="All passwords have to be exact 8 hexadecimal characters (0..9, A..F) for 4 byte = 32 bit protection"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
 
+                <LinearLayout
+                    android:id="@+id/llPassword1ButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etSetPasswordLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="3"
+                        android:hint="old password"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="8"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSetPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text="00000000"
+                            android:maxLength="8"
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnSetPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="set password" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llPassword2ButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/etWritePasswordLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="3"
+                        android:hint="new password"
+                        app:boxCornerRadiusBottomEnd="5dp"
+                        app:boxCornerRadiusBottomStart="5dp"
+                        app:boxCornerRadiusTopEnd="5dp"
+                        app:boxCornerRadiusTopStart="5dp"
+                        app:endIconMode="clear_text"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="8"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etWritePassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:focusable="true"
+                            android:inputType="number"
+                            android:text="00000000"
+                            android:maxLength="8"
+                            tools:ignore="KeyboardInaccessibleWidget" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnWritePassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="write passwd" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llPassword3ButtonOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        android:id="@+id/btnPasswordProtectAfi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:text="protect AFI" />
+
+                    <Button
+                        android:id="@+id/btnPasswordProtectEas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:text="protect EAS" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/llNdefOperations"
@@ -639,7 +810,48 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/llEnableLockOperations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical"
+                android:visibility="visible">
 
+                <TextView
+                    android:id="@+id/tvInformationLockMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Enable Lock Mode"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvInformationLockMode2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="@string/lock_mode_information"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/swEnableLockOperations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:text="enable LOCK operations"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"

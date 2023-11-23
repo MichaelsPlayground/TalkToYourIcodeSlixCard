@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Talk to your ICODE Slix Card</string>
+    <string name="lock_mode_information">All Lock operations are IRREVOCABLE settings that can\'t get undone by an unlock or reset operation.\n\n
+    For that reason all Lock buttons are disabled by default. If you want to use these methods enable the functionality by putting the following switch to enabled.\n\n
+    Locking can brick your tag, so use this option with extreme care - You have been warned !</string>
 </resources>

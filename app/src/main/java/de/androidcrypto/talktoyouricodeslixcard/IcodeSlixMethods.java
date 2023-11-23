@@ -181,21 +181,16 @@ sum = 32 + 64 = 96 = 60h
         System.arraycopy(randomNumber, 0, randomNumberFull, 0, 2);
         System.arraycopy(randomNumber, 0, randomNumberFull, 2, 2);
         byte[] passwordXor = xor(password, randomNumberFull);
-        //Log.d(TAG, printData("randomNumber", randomNumber));
-        //Log.d(TAG, printData("randomNumberFull", randomNumberFull));
-        //Log.d(TAG, printData("passwordXor", passwordXor));
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ SET_PASSWORD_COMMAND, //(byte)0xb3, // command set password
-                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* MANUF ID*/ MANUFACTURER_CODE, // manufacturer code is 0x04h for NXP
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
                 /* PASS ID */ passwordIdentifier,
                 /* PASSWORD*/ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
         System.arraycopy(passwordXor, 0, cmd, 12, 4); // copy xored password
-        //Log.d(TAG, printData("tagUid", tagUid));
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -205,7 +200,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "setPassword IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "password set successfully");
         errorCode = RESPONSE_OK;
@@ -228,15 +222,13 @@ sum = 32 + 64 = 96 = 60h
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ WRITE_PASSWORD_COMMAND, //(byte)0xb4, // command write password
-                /* MANUF ID*/ MANUFACTURER_CODE_NXP, // manufactorer code is 0x04h for NXP
+                /* MANUF ID*/ MANUFACTURER_CODE, // manufacturer code is 0x04h for NXP
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
                 /* PASS ID */ passwordIdentifier,
                 /* PASSWORD*/ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
         System.arraycopy(password, 0, cmd, 12, 4); // copy xored password
-        //Log.d(TAG, printData("tagUid", tagUid));
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -246,7 +238,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "writePassword IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "password written successfully");
         errorCode = RESPONSE_OK;
@@ -1255,6 +1246,8 @@ sum = 32 + 64 = 96 = 60h
     private boolean checkResponse(byte[] response) {
         // check first byte
         if (getResponseByte(response) == OPERATION_OK) {
+            errorCode = RESPONSE_OK;
+            errorCodeReason = RESPONSE_OK_STRING;
             return true;
         }
         errorCode = getResponseBytes(response)[0];

@@ -45,6 +45,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -91,7 +93,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     LinearLayout llEasOperations;
     Button btnSetEas, btnUnsetEas, btnEasAlarm, btnLockEas;
 
+    /**
+     * section for password protection
+     */
 
+    LinearLayout llPasswordOperations;
+    Button btnSetPassword, btnWritePassword, btnPasswordProtectAfi, btnPasswordProtectEas;
+    private com.google.android.material.textfield.TextInputLayout etSetPasswordLayout, etWritePasswordLayout;
+    private com.google.android.material.textfield.TextInputEditText etSetPassword, etWritePassword;
 
     /**
      * section for NDEF operations
@@ -101,6 +110,12 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     private com.google.android.material.textfield.TextInputLayout etNdefMessageLayout;
     private com.google.android.material.textfield.TextInputEditText etNdefMessage;
 
+    /**
+     * section for enabling lock operations
+     */
+
+    LinearLayout llEnableLockOperations;
+    com.google.android.material.switchmaterial.SwitchMaterial swEnableLockOperations;
 
     /**
      * section general
@@ -173,6 +188,16 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         btnEasAlarm = findViewById(R.id.btnEasAlarm);
         btnLockEas = findViewById(R.id.btnLockEas);
 
+        // password operations section
+        llPasswordOperations = findViewById(R.id.llPasswordOperations);
+        btnSetPassword = findViewById(R.id.btnSetPassword);
+        btnWritePassword = findViewById(R.id.btnWritePassword);
+        btnPasswordProtectAfi = findViewById(R.id.btnPasswordProtectAfi);
+        btnPasswordProtectEas = findViewById(R.id.btnPasswordProtectEas);
+        etSetPasswordLayout = findViewById(R.id.etSetPasswordLayout);
+        etWritePasswordLayout = findViewById(R.id.etWritePasswordLayout);
+        etSetPassword = findViewById(R.id.etSetPassword);
+        etWritePassword = findViewById(R.id.etWritePassword);
 
         // NDEF operations section
         llNdefOperations = findViewById(R.id.llNdefOperations);
@@ -180,6 +205,10 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         btnClearTag = findViewById(R.id.btnNdefClearTag);
         etNdefMessageLayout = findViewById(R.id.etNdefMessageLayout);
         etNdefMessage = findViewById(R.id.etNdefMessage);
+
+        // Enable Lock operations
+        llEnableLockOperations = findViewById(R.id.llEnableLockOperations);
+        swEnableLockOperations = findViewById(R.id.swEnableLockOperations);
 
         // general section
         output = findViewById(R.id.etOutput);
@@ -421,7 +450,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                         .setNegativeButton(android.R.string.no, dialogClickListener)
                         .setTitle("LOCK the AFI")
                         .show();
-
             }
         });
 
@@ -429,14 +457,104 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
          * eas operations section
          */
 
-        // todo eas clicks
+        btnSetEas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setEas();
+            }
+        });
 
+        btnUnsetEas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetEas();
+            }
+        });
 
+        btnEasAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                easAlarm();
+            }
+        });
 
+        btnLockEas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // this is a permanently operation - show a confirmation dialog
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                // todo lockEas();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                // nothing to do
+                                writeToUiAppend(output, "lock of the EAS aborted");
+                                break;
+                        }
+                    }
+                };
+                final String selectedFolderString = "You are going to lock the EAS " + "\n\n" +
+                        "This is an irrevocable setting that cannot get undone" + "\n\n" +
+                        "Do you want to proceed ?";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener)
+                        .setTitle("LOCK the EAS")
+                        .show();
+            }
+        });
 
         /**
-         *
+         * password operations section
          */
+
+        btnSetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String setPassword = etSetPassword.getText().toString();
+                if (TextUtils.isEmpty(setPassword)) {
+                    etSetPasswordLayout.setError("Set Password is empty");
+                    return;
+                } else {
+                    etSetPasswordLayout.setError("");
+                }
+                byte[] setPasswordByte = Utils.hexStringToByteArray(setPassword);
+                if ((setPasswordByte == null) || (setPasswordByte.length !=4)) {
+                    etSetPasswordLayout.setError("Set Password is false");
+                    return;
+                } else {
+                    etSetPasswordLayout.setError("");
+                }
+                setPasswordEasAfi(setPasswordByte);
+            }
+        });
+
+        btnWritePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String writePassword = etWritePassword.getText().toString();
+                if (TextUtils.isEmpty(writePassword)) {
+                    etWritePasswordLayout.setError("Write Password is empty");
+                    return;
+                } else {
+                    etWritePasswordLayout.setError("");
+                }
+                byte[] writePasswordByte = Utils.hexStringToByteArray(writePassword);
+                if ((writePasswordByte == null) || (writePasswordByte.length !=4)) {
+                    etWritePasswordLayout.setError("Write Password is wrong");
+                    return;
+                } else {
+                    etWritePasswordLayout.setError("");
+                }
+                writePasswordEasAfi(writePasswordByte);
+            }
+        });
 
 
         /**
@@ -464,6 +582,55 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             }
         });
 
+        /**
+         * section for Enabling Lock operations
+         */
+
+        swEnableLockOperations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("Switch clicked, status is " + swEnableLockOperations.isChecked());
+                if (swEnableLockOperations.isChecked()) {
+                    // activate all lock button
+                    btnLockAfi.setEnabled(true);
+                    btnLockBlock.setEnabled(true);
+                    btnLockDsfid.setEnabled(true);
+                    btnLockEas.setEnabled(true);
+                    // set color
+                    ViewCompat.setBackgroundTintList(
+                            btnLockAfi,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
+                    ViewCompat.setBackgroundTintList(
+                            btnLockBlock,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
+                    ViewCompat.setBackgroundTintList(
+                            btnLockDsfid,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
+                    ViewCompat.setBackgroundTintList(
+                            btnLockEas,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
+                } else {
+                    // disable all lock buttons
+                    btnLockAfi.setEnabled(false);
+                    btnLockBlock.setEnabled(false);
+                    btnLockDsfid.setEnabled(false);
+                    btnLockEas.setEnabled(false);
+                    // set color
+                    ViewCompat.setBackgroundTintList(
+                            btnLockAfi,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
+                    ViewCompat.setBackgroundTintList(
+                            btnLockBlock,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
+                    ViewCompat.setBackgroundTintList(
+                            btnLockDsfid,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
+                    ViewCompat.setBackgroundTintList(
+                            btnLockEas,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
+                }
+            }
+        });
     }
 
     /**
@@ -855,19 +1022,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         return success;
     }
 
-    private boolean lockEas() {
-        if (!checkValidTag()) return false;
-        writeToUiAppend(output, outputDivider);
-        boolean success = icodeSlixMethods.lockEas();
-        writeToUiAppend(output, "lockEas: " + success);
-        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
-            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
-        } else {
-            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
-        }
-        return success;
-    }
-
     private byte[] easAlarm() {
         if (!checkValidTag()) return null;
         writeToUiAppend(output, outputDivider);
@@ -882,11 +1036,25 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         // easAlarm length: 32 data: 2fb36270d5a7907fe8b18038d281497682da9a866faf8bb0f19cd112a57237ef
     }
 
+    private boolean lockEas() {
+        if (!checkValidTag()) return false;
+        writeToUiAppend(output, outputDivider);
+        boolean success = icodeSlixMethods.lockEas();
+        writeToUiAppend(output, "lockEas: " + success);
+        if (icodeSlixMethods.getErrorCode() == IcodeSlixMethods.RESPONSE_OK) {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_GREEN);
+        } else {
+            writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
+        }
+        return success;
+    }
+
     /**
      * section for password protection
      */
 
     private boolean setPasswordEasAfi(byte[] password) {
+        writeToUiAppend(output, "setPasswordEasAfi: 1");
         if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setPasswordEasAfi(password);
@@ -896,6 +1064,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         } else {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
         }
+        writeToUiAppend(output, "setPasswordEasAfi: 2");
         return success;
     }
 
@@ -1058,6 +1227,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         llEasOperations.setVisibility(View.GONE);
 
         llNdefOperations.setVisibility(View.GONE);
+        llEnableLockOperations.setVisibility(View.GONE);
     }
 
     /**
@@ -1296,6 +1466,16 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             public boolean onMenuItemClick(MenuItem item) {
                 allLayoutsInvisible();
                 llNdefOperations.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
+        MenuItem mEnableLockOperations = menu.findItem(R.id.action_enable_lock_operations);
+        mEnableLockOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                allLayoutsInvisible();
+                llEnableLockOperations.setVisibility(View.VISIBLE);
                 return false;
             }
         });

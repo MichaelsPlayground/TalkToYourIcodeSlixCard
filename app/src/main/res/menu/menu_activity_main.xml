@@ -31,6 +31,11 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_enable_lock_operations"
+        android:title="Enable Lock Operations"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_standard_file"
         android:title="standard file"
         app:showAsAction="never"/>
