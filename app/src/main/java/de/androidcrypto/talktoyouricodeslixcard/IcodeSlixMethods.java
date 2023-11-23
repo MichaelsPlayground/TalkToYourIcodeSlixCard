@@ -3,11 +3,9 @@ package de.androidcrypto.talktoyouricodeslixcard;
 import static de.androidcrypto.talktoyouricodeslixcard.Utils.printData;
 
 import android.app.Activity;
-import android.icu.lang.UScript;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
-import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcV;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,7 +21,7 @@ public class IcodeSlixMethods {
 
     private final Tag tag;
     private final Activity activity;
-    private final TextView textView; // used for displaying information's from the methods
+    private final TextView textView;
 
     //
     private NfcV nfcV;
@@ -70,10 +68,8 @@ public class IcodeSlixMethods {
     private static final byte PASSWORD_PROTECT_EAS_AFI_COMMAND = (byte) 0xA6;
     private static final byte MANUFACTURER_CODE_NXP = (byte) 0x04;
     private static final byte PASSWORD_IDENTIFIER_EAS_AFI = (byte) 0x10;
+
     // Response codes
-    private boolean isTagIcodeSlix = false;
-    private boolean printToLog = true; // print data to log
-    private String logData;
     private byte errorCode;
     private String errorCodeReason;
     private static final byte OPERATION_OK = (byte) 0x00;
@@ -83,7 +79,6 @@ public class IcodeSlixMethods {
     private static final byte RESPONSE_FAILURE = (byte) 0xFF; // general, undefined failure
     private static final String RESPONSE_FAILURE_STRING = "FAILURE";
     // constants
-    // todo get data from SystemInformation
     private int MAXIMUM_BLOCK_NUMBER; // fixed for ICODE SLIX S with 28 blocks * 4 bytes = 108 bytes user memory = 27
     // from system information
     private int NUMBER_OF_BLOCKS;
@@ -176,7 +171,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "Could not get the random number, aborted");
             return false;
         }
-        //Log.d(TAG, printData("password", password));
         byte[] randomNumberFull = new byte[4];
         System.arraycopy(randomNumber, 0, randomNumberFull, 0, 2);
         System.arraycopy(randomNumber, 0, randomNumberFull, 2, 2);
@@ -258,7 +252,6 @@ sum = 32 + 64 = 96 = 60h
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -268,7 +261,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "passwordProtectEas IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "passwordProtectEas successfully");
         errorCode = RESPONSE_OK;
@@ -289,7 +281,6 @@ sum = 32 + 64 = 96 = 60h
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -299,7 +290,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "passwordProtectAfi IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "passwordProtectAfi successfully");
         errorCode = RESPONSE_OK;
@@ -316,7 +306,6 @@ sum = 32 + 64 = 96 = 60h
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -326,7 +315,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "setEas IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "eas set successfully");
         errorCode = RESPONSE_OK;
@@ -343,7 +331,6 @@ sum = 32 + 64 = 96 = 60h
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -353,7 +340,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "resetEas IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "eas reset successfully");
         errorCode = RESPONSE_OK;
@@ -370,7 +356,6 @@ sum = 32 + 64 = 96 = 60h
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -380,7 +365,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "easAlarm IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "set eas alarm successfully");
         errorCode = RESPONSE_OK;
@@ -397,7 +381,6 @@ sum = 32 + 64 = 96 = 60h
                 /* UID     */ (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         };
         System.arraycopy(tagUid, 0, cmd, 3, 8); // copy tagId to UID
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -407,7 +390,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "lockEas IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "eas locked successfully");
         errorCode = RESPONSE_OK;
@@ -445,7 +427,6 @@ sum = 32 + 64 = 96 = 60h
                 /* 1st BLK */ (byte) (firstBlockNumber & 0xff),
                 /* BLK NBR */ (byte) (numberOfBlocks & 0xff),
         };
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -455,7 +436,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "set eas alarm successfully");
         errorCode = RESPONSE_OK;
@@ -492,7 +472,6 @@ bit 8 0 subcarrier (0 = ask, 1 = fsk)
                 /* 1st BLK */ (byte) (firstBlockNumber & 0xff),
                 /* BLK NBR */ (byte) (numberOfBlocks & 0xff),
         };
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -502,7 +481,6 @@ bit 8 0 subcarrier (0 = ask, 1 = fsk)
             Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "set eas alarm successfully");
         errorCode = RESPONSE_OK;
@@ -537,7 +515,6 @@ sum = 32 + 64 = 96 = 60h
                 /* 1st BLK */ firstBlockNumber,
                 /* BLK NBR */ numberOfBlocks
         };
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -547,7 +524,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "inventoryRead IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "set eas alarm successfully");
         errorCode = RESPONSE_OK;
@@ -585,7 +561,6 @@ sum = 32 + 64 = 96 = 60h
                 /* 1st BLK */ (byte) (firstBlockNumber & 0xff),
                 /* BLK NBR */ (byte) (numberOfBlocks & 0xff),
         };
-        //Log.d(TAG, printData("cmd", cmd));
         byte[] response;
         try {
             response = nfcV.transceive(cmd);
@@ -595,7 +570,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "fastInventoryRead IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "set eas alarm successfully");
         errorCode = RESPONSE_OK;
@@ -636,14 +610,12 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "getMultipleBlockSecurityStatus IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readMultipleBlocks", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "security data from blocks " + blockNumber + " ff read successfully");
         errorCode = RESPONSE_OK;
         errorCodeReason = RESPONSE_OK_STRING;
         return trimFirstByte(response);
     }
-
 
     public byte[] readSingleBlock(int blockNumber) {
         // sanity check
@@ -667,7 +639,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "readSingleBlock IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "data from block " + blockNumber + " read successfully");
         errorCode = RESPONSE_OK;
@@ -701,7 +672,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "readMultipleBlocks IOException: " + e.getMessage());
             return null;
         }
-        //writeToUiAppend(textView, printData("readMultipleBlocks", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
         Log.d(TAG, "data from blocks " + blockNumber + " ff read successfully");
         errorCode = RESPONSE_OK;
@@ -736,7 +706,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "writeSingleBlock IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "data written to block " + blockNumber + " successfully");
         errorCode = RESPONSE_OK;
@@ -816,7 +785,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "lockBlock IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "block locked successfully");
         errorCode = RESPONSE_OK;
@@ -826,7 +794,6 @@ sum = 32 + 64 = 96 = 60h
 
     public boolean writeAfi(byte afi) {
         // sanity check
-
         byte[] cmd = new byte[] {
                 /* FLAGS   */ (byte)0x20, // flags: addressed (= UID field present), use default OptionSet
                 /* COMMAND */ WRITE_AFI_CCOMMAND, //(byte)0x27, // command write afi
@@ -843,7 +810,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "writeAfi IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "afi written successfully");
         errorCode = RESPONSE_OK;
@@ -867,7 +833,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "lockAfi IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "afi locked successfully");
         errorCode = RESPONSE_OK;
@@ -893,7 +858,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "writeDsfId IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "dsfId written successfully");
         errorCode = RESPONSE_OK;
@@ -917,7 +881,6 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "lockDsfId IOException: " + e.getMessage());
             return false;
         }
-        //writeToUiAppend(textView, printData("readSingleBlock", response));
         if (!checkResponse(response)) return false; // errorCode and reason are setup
         Log.d(TAG, "dsfId locked successfully");
         errorCode = RESPONSE_OK;
@@ -962,11 +925,9 @@ sum = 32 + 64 = 96 = 60h
     }
 
     private byte[] createNdefTextMessage(String message) {
-        Log.d(TAG, "createNdefMessage: " + message);
         NdefRecord ndefRecord = NdefRecord.createTextRecord("en", message);
         NdefMessage ndefMessage = new NdefMessage(ndefRecord);
         byte[] ndefMessageByte = ndefMessage.toByteArray();
-        Log.d(TAG, printData("ndefMessageByte", ndefMessageByte));
         int ndefMessageLength = ndefMessageByte.length;
         int ndefMessageTotalLength = ndefMessageLength + 3;
         byte[] fullNdefMessage = new byte[ndefMessageTotalLength];
@@ -974,7 +935,6 @@ sum = 32 + 64 = 96 = 60h
         fullNdefMessage[1] = (byte) (ndefMessageLength & 0xff);
         System.arraycopy(ndefMessageByte, 0, fullNdefMessage, 2, ndefMessageLength);
         fullNdefMessage[ndefMessageTotalLength - 1] = (byte) 0xFE; // terminator
-        Log.d(TAG, printData("fullNdefMessage", fullNdefMessage));
         return fullNdefMessage;
     }
 
@@ -1032,7 +992,6 @@ sum = 32 + 64 = 96 = 60h
             return null;
         }
         if (!checkResponse(response)) return null; // errorCode and reason are setup
-        Log.d(TAG, "system information read successfully");
         errorCode = RESPONSE_OK;
         errorCodeReason = RESPONSE_OK_STRING;
         return new SystemInformation(response);
@@ -1056,9 +1015,7 @@ sum = 32 + 64 = 96 = 60h
             Log.e(TAG, "IOException: " + e.getMessage());
             return null;
         }
-        writeToUiAppend(textView, printData("response", response));
         if (!checkResponse(response)) return null; // errorCode and reason are setup
-        Log.d(TAG, "random number read successfully");
         errorCode = RESPONSE_OK;
         errorCodeReason = RESPONSE_OK_STRING;
         return trimFirstByte(response);
@@ -1116,12 +1073,10 @@ sum = 32 + 64 = 96 = 60h
                 BYTES_PER_BLOCK = systemInformation.getBytesPerBlock();
                 MEMORY_SIZE = systemInformation.getMemorySizeInt();
                 MAXIMUM_BLOCK_NUMBER = NUMBER_OF_BLOCKS - 1;
-
                 Log.d(TAG, systemInformation.dump());
                 writeToUiAppend(textView, systemInformation.dump());
                 errorCode = RESPONSE_OK;
                 errorCodeReason = RESPONSE_OK_STRING;
-
                 isInitialized = true;
             }
 
@@ -1132,10 +1087,8 @@ sum = 32 + 64 = 96 = 60h
             errorCodeReason = "IOException: " + e.getMessage();
             return false;
         }
-
         Utils.vibrateShort(activity.getApplicationContext());
         return true;
-
     }
 
     /**
@@ -1287,8 +1240,6 @@ sum = 32 + 64 = 96 = 60h
         }
         return dataA;
     }
-
-
 
     /**
      * section for UI related tasks

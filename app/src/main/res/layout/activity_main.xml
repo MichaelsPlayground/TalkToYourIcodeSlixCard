@@ -579,9 +579,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="All passwords have to be exact 8 hexadecimal characters (0..9, A..F) for 4 byte = 32 bit protection"
+                    android:text="All passwords have to be exact 8 hexadecimal characters (0..9, A..F) long for 4 byte = 32 bit protection"
                     android:textAlignment="center"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal" />
 
                 <LinearLayout

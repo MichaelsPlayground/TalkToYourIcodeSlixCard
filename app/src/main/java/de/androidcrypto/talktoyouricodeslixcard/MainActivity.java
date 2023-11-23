@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                // todo check lockBlock(blockNumberToLock);
+                                lockBlock(blockNumberToLock);
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
@@ -431,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                // todo lockAfi();
+                                lockAfi();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
@@ -488,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                // todo lockEas();
+                                lockEas();
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
@@ -552,10 +552,76 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 } else {
                     etWritePasswordLayout.setError("");
                 }
-                writePasswordEasAfi(writePasswordByte);
+                if(writePasswordEasAfi(writePasswordByte)) {
+                    writeToUiAppend(output, "New password data (hex): " + writePassword);
+                    writeToUiToastLong("Important notice:\nDon't forget to save the new password as it is not recoverable !");
+                };
             }
         });
 
+        btnPasswordProtectAfi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // this is a permanently operation - show a confirmation dialog
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                passwordProtectAfi();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                // nothing to do
+                                writeToUiAppend(output, "Password Protect of the AFI value aborted");
+                                break;
+                        }
+                    }
+                };
+                final String selectedFolderString = "You are going to password protect the AFI value " + "\n\n" +
+                        "This is an irrevocable setting that cannot get undone" + "\n\n" +
+                        "Do you want to proceed ?";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener)
+                        .setTitle("Password Protect the AFI value")
+                        .show();
+            }
+        });
+
+        btnPasswordProtectEas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // this is a permanently operation - show a confirmation dialog
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                passwordProtectEas();
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                // nothing to do
+                                writeToUiAppend(output, "Password Protect of the EAS setting aborted");
+                                break;
+                        }
+                    }
+                };
+                final String selectedFolderString = "You are going to password protect the EAS setting " + "\n\n" +
+                        "This is an irrevocable setting that cannot get undone" + "\n\n" +
+                        "Do you want to proceed ?";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setMessage(selectedFolderString).setPositiveButton(android.R.string.yes, dialogClickListener)
+                        .setNegativeButton(android.R.string.no, dialogClickListener)
+                        .setTitle("Password Protect the EAS setting")
+                        .show();
+            }
+        });
 
         /**
          * NDEF operations section
@@ -591,11 +657,13 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             public void onClick(View view) {
                 System.out.println("Switch clicked, status is " + swEnableLockOperations.isChecked());
                 if (swEnableLockOperations.isChecked()) {
-                    // activate all lock button
+                    // activate all lock + password protection buttons
                     btnLockAfi.setEnabled(true);
                     btnLockBlock.setEnabled(true);
                     btnLockDsfid.setEnabled(true);
                     btnLockEas.setEnabled(true);
+                    btnPasswordProtectAfi.setEnabled(true);
+                    btnPasswordProtectEas.setEnabled(true);
                     // set color
                     ViewCompat.setBackgroundTintList(
                             btnLockAfi,
@@ -609,12 +677,20 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                     ViewCompat.setBackgroundTintList(
                             btnLockEas,
                             ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
+                    ViewCompat.setBackgroundTintList(
+                            btnPasswordProtectAfi,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
+                    ViewCompat.setBackgroundTintList(
+                            btnPasswordProtectEas,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.red));
                 } else {
-                    // disable all lock buttons
+                    // disable all lock + password protection buttons
                     btnLockAfi.setEnabled(false);
                     btnLockBlock.setEnabled(false);
                     btnLockDsfid.setEnabled(false);
                     btnLockEas.setEnabled(false);
+                    btnPasswordProtectAfi.setEnabled(false);
+                    btnPasswordProtectEas.setEnabled(false);
                     // set color
                     ViewCompat.setBackgroundTintList(
                             btnLockAfi,
@@ -627,6 +703,12 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                             ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
                     ViewCompat.setBackgroundTintList(
                             btnLockEas,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
+                    ViewCompat.setBackgroundTintList(
+                            btnPasswordProtectAfi,
+                            ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
+                    ViewCompat.setBackgroundTintList(
+                            btnPasswordProtectEas,
                             ContextCompat.getColorStateList(getApplicationContext(), R.color.disabled_button_light_grey));
                 }
             }
@@ -1054,7 +1136,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
      */
 
     private boolean setPasswordEasAfi(byte[] password) {
-        writeToUiAppend(output, "setPasswordEasAfi: 1");
         if (!checkValidTag()) return false;
         writeToUiAppend(output, outputDivider);
         boolean success = icodeSlixMethods.setPasswordEasAfi(password);
@@ -1064,7 +1145,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         } else {
             writeToUiAppendBorderColor(errorCode, errorCodeLayout, icodeSlixMethods.getErrorCodeReason(), COLOR_RED);
         }
-        writeToUiAppend(output, "setPasswordEasAfi: 2");
         return success;
     }
 
@@ -1225,7 +1305,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         llDsfidOperations.setVisibility(View.GONE);
         llAfiOperations.setVisibility(View.GONE);
         llEasOperations.setVisibility(View.GONE);
-
+        llPasswordOperations.setVisibility(View.GONE);
         llNdefOperations.setVisibility(View.GONE);
         llEnableLockOperations.setVisibility(View.GONE);
     }
@@ -1283,11 +1363,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         });
     }
 
-    private void writeToUiToast(String message) {
+    private void writeToUiToastLong(String message) {
         runOnUiThread(() -> {
             Toast.makeText(getApplicationContext(),
                     message,
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
         });
     }
 
@@ -1314,19 +1394,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         errorCodeLayout.setBoxStrokeColorStateList(myColorList);
     }
 
-/*
-    private void invalidateAllSelections() {
-        selectedApplicationId = null;
-        selectedFileId = "";
-        runOnUiThread(() -> {
-            applicationSelected.setText("");
-            fileSelected.setText("");
-        });
-        KEY_NUMBER_USED_FOR_AUTHENTICATION = -1;
-    }
-*/
-
-
     private void vibrateShort() {
         // Make a Sound
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1334,79 +1401,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         } else {
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(50);
-        }
-    }
-
-    /**
-     * section OptionsMenu export text file methods
-     */
-
-    private void exportTextFile() {
-        //provideTextViewDataForExport(etLog);
-        if (TextUtils.isEmpty(exportString)) {
-            writeToUiToast("Log some data before writing files :-)");
-            return;
-        }
-        writeStringToExternalSharedStorage();
-    }
-
-    private void writeStringToExternalSharedStorage() {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        // Optionally, specify a URI for the file that should appear in the
-        // system file picker when it loads.
-        // boolean pickerInitialUri = false;
-        // intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-        // get filename from edittext
-        String filename = exportStringFileName;
-        // sanity check
-        if (filename.equals("")) {
-            writeToUiToast("scan a tag before writing the content to a file :-)");
-            return;
-        }
-        intent.putExtra(Intent.EXTRA_TITLE, filename);
-        selectTextFileActivityResultLauncher.launch(intent);
-    }
-
-    ActivityResultLauncher<Intent> selectTextFileActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        Intent resultData = result.getData();
-                        // The result data contains a URI for the document or directory that
-                        // the user selected.
-                        Uri uri = null;
-                        if (resultData != null) {
-                            uri = resultData.getData();
-                            // Perform operations on the document using its URI.
-                            try {
-                                // get file content from edittext
-                                String fileContent = exportString;
-                                System.out.println("## data to write: " + exportString);
-                                writeTextToUri(uri, fileContent);
-                                writeToUiToast("file written to external shared storage: " + uri.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                writeToUiToast("ERROR: " + e.toString());
-                                return;
-                            }
-                        }
-                    }
-                }
-            });
-
-    private void writeTextToUri(Uri uri, String data) throws IOException {
-        try {
-            System.out.println("** data to write: " + data);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(getApplicationContext().getContentResolver().openOutputStream(uri));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            System.out.println("Exception File write failed: " + e.toString());
         }
     }
 
@@ -1458,7 +1452,15 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             }
         });
 
-
+        MenuItem mPasswordOperations = menu.findItem(R.id.action_password_operations);
+        mPasswordOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                allLayoutsInvisible();
+                llPasswordOperations.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
 
         MenuItem mNdefOperations = menu.findItem(R.id.action_ndef_operations);
         mNdefOperations.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -1476,26 +1478,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             public boolean onMenuItemClick(MenuItem item) {
                 allLayoutsInvisible();
                 llEnableLockOperations.setVisibility(View.VISIBLE);
-                return false;
-            }
-        });
-
-        MenuItem mStandardFile = menu.findItem(R.id.action_standard_file);
-        mStandardFile.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                allLayoutsInvisible();
-                //llStandardFile.setVisibility(View.VISIBLE);
-                return false;
-            }
-        });
-
-        MenuItem mExportTextFile = menu.findItem(R.id.action_export_text_file);
-        mExportTextFile.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Log.i(TAG, "mExportTextFile");
-                exportTextFile();
                 return false;
             }
         });

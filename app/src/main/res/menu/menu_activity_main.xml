@@ -26,28 +26,18 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_password_operations"
+        android:title="Password Operations"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_ndef_operations"
         android:title="NDEF Operations"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_enable_lock_operations"
-        android:title="Enable Lock Operations"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_standard_file"
-        android:title="standard file"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_export_text_file"
-        android:title="Export text File"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_export_binary_file"
-        android:title="Export binary File"
+        android:title="Enable Lock + Protection buttons"
         app:showAsAction="never"/>
 
 </menu>
